@@ -1,0 +1,4 @@
+baseURL = 'https://dustinmichels.com'
+languageCode = 'en-us'
+title = 'My New Hugo Site'
+theme = 'personal'

@@ -1,0 +1,15 @@
+# Hugo build outputs
+/public/
+/resources/_gen/
+/hugo_stats.json
+
+# Hugo cache and locks
+/.hugo_cache/
+/.hugo_build.lock
+
+# Node/npm artifacts
+/node_modules/
+/.npm/_logs/
+
+# OS files
+.DS_Store
