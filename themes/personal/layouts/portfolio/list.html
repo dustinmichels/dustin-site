@@ -1,0 +1,23 @@
+{{ define "main" }}
+<div class="max-w-6xl w-full">
+    <h2 class="text-5xl text-slate-900 mb-12 text-center">PROJECTS</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {{ range .Pages }}
+        <a href="{{ .RelPermalink }}" class="block bg-white rounded-[2.5rem] overflow-hidden border-2 border-slate-100 hover:border-blue-500 transition-all hover:-translate-y-2 group no-underline">
+            <div class="h-56 bg-slate-100 flex items-center justify-center text-6xl group-hover:bg-blue-50 transition-colors">
+                {{ with .Params.emoji }}{{ . }}{{ else }}📄{{ end }}
+            </div>
+            <div class="p-8">
+                <h4 class="text-xl font-bold mb-2 text-slate-900">{{ .Title }}</h4>
+                <p class="text-slate-500 text-sm mb-6">{{ .Summary }}</p>
+                <div class="flex gap-2 flex-wrap">
+                    {{ range .Params.tech }}
+                    <span class="text-[10px] bg-slate-100 px-2 py-1 rounded-md font-bold text-slate-400 uppercase">{{ . }}</span>
+                    {{ end }}
+                </div>
+            </div>
+        </a>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dustin Michels | Cyclist, Engineer, Planner</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f0fdf4; /* Very light green */
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .playful-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .map-grid {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .bike-path {
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -200; }
+        }
+        .blob {
+            border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+        }
+        .cursor-custom {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' style='fill:black'><path d='M15.5 2.25a.75.75 0 01.75.75V4.5a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM21 11.25a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5a.75.75 0 01.75-.75zM3 11.25a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5a.75.75 0 01.75-.75zM15.5 19.5a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5a.75.75 0 01.75-.75z'/></svg>"), auto;
+        }
+    </style>
+</head>
+<body class="map-grid">
+    <div id="app" class="min-h-screen flex flex-col relative">
+        
+        <!-- Animated Bike Background Layer -->
+        <div class="fixed inset-0 pointer-events-none opacity-20 z-0">
+            <svg width="100%" height="100%">
+                <path id="path1" d="M-100,200 Q200,50 400,300 T900,100 T1400,400 T2000,200" fill="none" stroke="#22c55e" stroke-width="2" class="bike-path" />
+            </svg>
+            <div id="bike-rider" class="absolute top-0 left-0">
+                <span class="text-4xl">🚲</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-6 flex justify-between items-center z-50">
+            <div @click="view = 'home'" class="text-2xl font-bold playful-font cursor-pointer hover:scale-105 transition-transform text-green-700">
+                dustinmichels.com
+            </div>
+            <div class="space-x-4 md:space-x-8 text-lg font-medium">
+                <button @click="view = 'writing'" :class="view === 'writing' ? 'text-green-600 underline decoration-4' : 'hover:text-green-500'">Writing</button>
+                <button @click="view = 'portfolio'" :class="view === 'portfolio' ? 'text-blue-600 underline decoration-4' : 'hover:text-blue-500'">Portfolio</button>
+                <button @click="view = 'games'" :class="view === 'games' ? 'text-orange-600 underline decoration-4' : 'hover:text-orange-500'">Games</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow flex flex-col items-center justify-center p-6 relative z-10">
+            
+            <!-- Home View -->
+            <transition name="fade" mode="out-in">
+                <div v-if="view === 'home'" key="home" class="max-w-4xl w-full">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        
+                        <!-- Profile Image Placeholder -->
+                        <div class="order-2 md:order-1 flex justify-center">
+                            <div class="relative group">
+                                <div class="absolute inset-0 bg-yellow-300 blob transform rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                                <div class="absolute inset-0 bg-blue-300 blob transform -rotate-3 group-hover:-rotate-6 transition-transform duration-500 delay-75"></div>
+                                <div class="relative w-64 h-64 md:w-80 md:h-80 bg-slate-200 blob overflow-hidden border-4 border-white shadow-2xl flex items-center justify-center">
+                                    <!-- Replace with <img src="..."> -->
+                                    <div class="text-center p-8">
+                                        <p class="text-slate-400 font-bold uppercase tracking-widest">Picture of Dustin</p>
+                                        <span class="text-6xl mt-4 block">👋</span>
+                                    </div>
+                                </div>
+                                <!-- Decorative elements -->
+                                <div class="absolute -top-4 -right-4 text-4xl animate-bounce">🏙️</div>
+                                <div class="absolute -bottom-4 -left-4 text-4xl animate-pulse">🌳</div>
+                            </div>
+                        </div>
+
+                        <!-- Intro Text -->
+                        <div class="order-1 md:order-2 space-y-6">
+                            <h1 class="text-5xl md:text-7xl font-extrabold text-slate-800 leading-tight">
+                                Hi, I'm <span class="text-green-600">Dustin!</span>
+                            </h1>
+                            <p class="text-xl md:text-2xl text-slate-700 leading-relaxed">
+                                Cyclist, software engineer, and urban planning master’s student <span class="text-blue-600 font-bold">@ Tufts</span>.
+                            </p>
+                            
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="tag in tags" :key="tag" 
+                                      class="bg-white px-4 py-2 rounded-full border-2 border-slate-200 text-sm font-bold text-slate-600 hover:border-green-400 hover:text-green-600 transition-colors cursor-default">
+                                    {{ tag }}
+                                </span>
+                            </div>
+
+                            <div class="bg-yellow-50 p-6 rounded-3xl border-2 border-dashed border-yellow-400 shadow-sm">
+                                <h3 class="font-bold text-yellow-800 mb-2 playful-font text-xl">Current Mission:</h3>
+                                <p class="text-slate-700">
+                                    Designing child-friendly cities and child-empowering urban design. 
+                                    <span class="block mt-2 font-semibold">Kids, bikes, and kids on bikes.</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Writing Placeholder -->
+                <div v-else-if="view === 'writing'" key="writing" class="max-w-2xl w-full text-center py-20">
+                    <h2 class="text-4xl font-bold mb-8 text-green-700">Writing</h2>
+                    <p class="text-xl text-slate-600">Coming soon: Essays on transportation, data stories, and urban observations.</p>
+                    <div class="mt-12 text-6xl">✍️</div>
+                </div>
+
+                <!-- Portfolio Placeholder -->
+                <div v-else-if="view === 'portfolio'" key="portfolio" class="max-w-4xl w-full py-20">
+                    <h2 class="text-4xl font-bold mb-12 text-blue-700 text-center">Portfolio</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div v-for="i in 2" :key="i" class="bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-lg hover:shadow-xl transition-shadow">
+                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-400">Project Visual</div>
+                            <h4 class="text-xl font-bold mb-2">Urban Data Dashboard {{i}}</h4>
+                            <p class="text-slate-600">A map-based exploration of local infrastructure and accessibility.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Games Placeholder -->
+                <div v-else-if="view === 'games'" key="games" class="max-w-2xl w-full text-center py-20">
+                    <h2 class="text-4xl font-bold mb-8 text-orange-700">Games</h2>
+                    <p class="text-xl text-slate-600">Interactive playgrounds and simulations about city life.</p>
+                    <div class="mt-12 flex justify-center gap-8">
+                        <span class="text-6xl animate-spin-slow">🎲</span>
+                        <span class="text-6xl animate-bounce">🕹️</span>
+                    </div>
+                </div>
+            </transition>
+        </main>
+
+        <!-- Footer -->
+        <footer class="p-8 text-center text-slate-400 text-sm">
+            <p>© {{ new Date().getFullYear() }} Dustin Michels — Built with Vue & Lots of Pedaling</p>
+        </footer>
+
+        <!-- Bottom Playful Elements -->
+        <div class="fixed bottom-0 left-0 w-full h-16 pointer-events-none flex justify-around items-end overflow-hidden opacity-40">
+            <span class="text-4xl transform translate-y-4">🌲</span>
+            <span class="text-5xl transform translate-y-2">🏢</span>
+            <span class="text-4xl transform translate-y-6">🛝</span>
+            <span class="text-6xl transform translate-y-2">🏠</span>
+            <span class="text-4xl transform translate-y-5">🌳</span>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const view = ref('home');
+                const tags = ref(['data', 'code', 'maps', 'transportation', 'sustainability', 'justice']);
+
+                onMounted(() => {
+                    // GSAP Animation for the Bike Rider
+                    gsap.to("#bike-rider", {
+                        duration: 15,
+                        repeat: -1,
+                        ease: "none",
+                        motionPath: {
+                            path: "#path1",
+                            align: "#path1",
+                            autoRotate: true,
+                            alignOrigin: [0.5, 0.5]
+                        }
+                    });
+
+                    // Initial entrance animations
+                    gsap.from("h1", { 
+                        duration: 1, 
+                        y: 50, 
+                        opacity: 0, 
+                        ease: "back.out(1.7)" 
+                    });
+                    
+                    gsap.from(".blob", { 
+                        duration: 1.5, 
+                        scale: 0.8, 
+                        opacity: 0, 
+                        stagger: 0.2, 
+                        ease: "elastic.out(1, 0.3)" 
+                    });
+                });
+
+                return {
+                    view,
+                    tags
+                }
+            }
+        }).mount('#app');
+
+        // Simple Tailwind Config for animations
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

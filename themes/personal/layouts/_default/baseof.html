@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bike-green: #22c55e;
+            --road-gray: #334155;
+            --sky-blue: #e0f2fe;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f0fdf4; /* Very light green from original */
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+        h1, h2, h3, .brand-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .map-grid {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .blob {
+            border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+        }
+        .custom-shadow {
+            box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.1);
+        }
+        /* Nav Hover Effect */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 4px;
+            bottom: -4px;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        #bike-path {
+            stroke-dasharray: 12;
+            animation: dash 30s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -240; }
+        }
+
+        .floating-element {
+            pointer-events: none;
+            position: absolute;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* Vue Transitions */
+        .page-fade-enter-active, .page-fade-leave-active {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .page-fade-enter-from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+        .page-fade-leave-to {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.95);
+        }
+    </style>
+</head>
+<body class="map-grid min-h-screen">
+    <div id="app" class="relative min-h-screen flex flex-col">
+        
+        <!-- Background Decorations (Parallax via GSAP) -->
+        <div class="parallax-container fixed inset-0 pointer-events-none overflow-hidden">
+            <!-- Very low depth for clouds: Minimal movement -->
+            <span class="floating-element text-6xl" style="top: 15%; left: 10%;" data-depth="0.05">☁️</span>
+            <span class="floating-element text-4xl" style="top: 25%; right: 15%;" data-depth="0.07">☁️</span>
+            <span class="floating-element text-5xl" style="top: 45%; left: 75%;" data-depth="0.06">☁️</span>
+            
+            <!-- Grounded items: Virtually stationary -->
+            <span class="floating-element text-5xl" style="bottom: 20%; left: 15%;" data-depth="0.02">🌳</span>
+            <span class="floating-element text-7xl" style="bottom: 10%; right: 10%;" data-depth="0.01">🏢</span>
+        </div>
+
+        <!-- Animated Bike Path Layer -->
+        <div class="fixed inset-0 pointer-events-none z-0 opacity-30">
+            <svg width="100%" height="100%" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+                <path id="motionPath" d="M-100,600 C200,600 400,100 700,400 S1100,700 1500,200" 
+                      fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" id="bike-path" />
+            </svg>
+            <div id="bike-rider-gsap" class="absolute text-5xl" style="transform-origin: center;">
+                <span class="inline-block" style="transform: scaleX(-1);">🚲</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-8 flex flex-col md:flex-row justify-between items-center z-50 gap-6">
+            <a href="{{ .Site.BaseURL }}" class="group cursor-pointer no-underline">
+                <h2 class="text-3xl brand-font text-slate-800 group-hover:text-green-600 transition-colors duration-300">
+                    DUSTIN<span class="text-green-600 group-hover:text-slate-800">.</span>MICHELS
+                </h2>
+                <div class="h-1 w-full bg-slate-800 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+            </a>
+            <div class="flex space-x-6 md:space-x-10 text-sm font-bold uppercase tracking-widest">
+                {{ range .Site.Menus.main }}
+                <a href="{{ .URL }}" 
+                   class="nav-link pb-1 transition-all text-slate-500 hover:text-slate-800 {{ if eq $.RelPermalink .URL }}text-green-600{{ end }}">
+                    {{ .Name }}
+                </a>
+                {{ end }}
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-grow flex items-center justify-center p-6 relative z-10 w-full">
+            <transition name="page-fade" mode="out-in" @enter="onPageEnter">
+                 <div :key="'{{ .RelPermalink }}'" class="w-full flex justify-center">
+                    {{ block "main" . }}{{ end }}
+                </div>
+            </transition>
+        </main>
+
+        <!-- Footer -->
+        <footer class="p-12 text-center text-slate-400 font-bold uppercase tracking-tighter text-xs">
+            <div class="flex justify-center gap-8 mb-4">
+                <a href="#" class="hover:text-green-600">Twitter</a>
+                <a href="#" class="hover:text-green-600">GitHub</a>
+                <a href="#" class="hover:text-green-600">LinkedIn</a>
+            </div>
+            <p>&copy; {{ now.Year }} {{ .Site.Params.footer_text }}</p>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                const onPageEnter = (el) => {
+                    // GSAP Entrance for elements
+                    gsap.from(el.querySelectorAll('.stagger-item'), {
+                        y: 30,
+                        opacity: 0,
+                        duration: 0.8,
+                        stagger: 0.2,
+                        ease: "back.out(1.7)"
+                    });
+                };
+
+                onMounted(() => {
+                    gsap.registerPlugin(MotionPathPlugin);
+
+                    // Hero Text Animation
+                    gsap.from(".hero-title", {
+                        scale: 0.8,
+                        opacity: 0,
+                        duration: 1.2,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+
+                    // Bike Rider Path Animation
+                    gsap.to("#bike-rider-gsap", {
+                        duration: 20,
+                        repeat: -1,
+                        ease: "none",
+                        motionPath: {
+                            path: "#motionPath",
+                            align: "#motionPath",
+                            autoRotate: true,
+                            alignOrigin: [0.5, 0.5]
+                        }
+                    });
+
+                    // Parallax Mouse Movement
+                    document.addEventListener("mousemove", (e) => {
+                        const { clientX, clientY } = e;
+                        const centerX = window.innerWidth / 2;
+                        const centerY = window.innerHeight / 2;
+
+                        document.querySelectorAll(".floating-element").forEach(el => {
+                            const depth = el.getAttribute("data-depth");
+                            const moveX = (clientX - centerX) * depth;
+                            const moveY = (clientY - centerY) * depth;
+                            gsap.to(el, {
+                                x: moveX,
+                                y: moveY,
+                                duration: 1.2,
+                                ease: "power2.out"
+                            });
+                        });
+                    });
+                });
+
+                return {
+                    onPageEnter
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
