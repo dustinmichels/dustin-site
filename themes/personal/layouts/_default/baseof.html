@@ -114,7 +114,7 @@
 
         <!-- Navigation -->
         <nav class="p-8 flex flex-col md:flex-row justify-between items-center z-50 gap-6">
-            <a href="{{ .Site.BaseURL }}" class="group cursor-pointer no-underline">
+            <a href="{{ .Site.Home.RelPermalink }}" class="group cursor-pointer no-underline">
                 <h2 class="text-3xl brand-font transition-colors duration-300 {{ if .IsHome }}text-green-600{{ else }}text-slate-500 hover:text-slate-800{{ end }}">
                     DUSTIN<span class="{{ if .IsHome }}text-slate-800{{ else }}text-green-600{{ end }}">.</span>MICHELS
                 </h2>
