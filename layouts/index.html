@@ -13,10 +13,10 @@
                 <!-- Image Container -->
                 <div class="relative w-64 h-64 md:w-80 md:h-80 bg-slate-200 blob overflow-hidden border-4 border-white shadow-2xl flex items-center justify-center z-10">
                     {{ $img := resources.Get "images/me.png" }}
-                    {{ $imgSmall := $img.Resize "256x256 webp q85" }}
-                    {{ $imgMedium := $img.Resize "320x320 webp q85" }}
-                    {{ $imgLarge := $img.Resize "512x512 webp q85" }}
-                    {{ $imgFallback := $img.Resize "320x320 q85" }}
+                    {{ $imgSmall := $img.Fill "256x256 webp q85 Center" }}
+                    {{ $imgMedium := $img.Fill "320x320 webp q85 Center" }}
+                    {{ $imgLarge := $img.Fill "512x512 webp q85 Center" }}
+                    {{ $imgFallback := $img.Fill "320x320 q85 Center" }}
                     <img 
                         src="{{ $imgFallback.RelPermalink }}" 
                         srcset="{{ $imgSmall.RelPermalink }} 256w,
