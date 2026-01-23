@@ -7,11 +7,11 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Swup -->
-    <script src="https://unpkg.com/swup@4"></script>
-    <script src="https://unpkg.com/@swup/head-plugin@2"></script>
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+    <script defer src="https://unpkg.com/swup@4"></script>
+    <script defer src="https://unpkg.com/@swup/head-plugin@2"></script>
+    <!-- GSAP (defer to ensure DOM is ready) -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
     <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Outfit:wght@100..900&display=swap"
@@ -242,28 +242,36 @@
     </div>
 
     <script>
-      // Initialize GSAP Plugin
-      gsap.registerPlugin(MotionPathPlugin);
+      // Wait for GSAP to be available (handles defer loading)
+      function waitForGSAP(callback) {
+        if (typeof gsap !== 'undefined' && typeof MotionPathPlugin !== 'undefined') {
+          callback();
+        } else {
+          setTimeout(function() { waitForGSAP(callback); }, 50);
+        }
+      }
 
       // --- Animation Functions ---
 
       function initBackgroundAnimations() {
         // Bike Rider Path Animation (Persistent)
         const bike = document.querySelector("#bike-rider-gsap");
-        if (bike) {
+        const motionPath = document.querySelector("#motionPath");
+
+        if (bike && motionPath && typeof gsap !== 'undefined') {
           // Shorter durations so bike exits screen faster, then 1s delay before restart
           // Mobile has shorter path visibility, so vanishes earlier
           const isMobile = window.innerWidth < 768;
           const duration = isMobile ? 8 : 10;
-          
+
           gsap.to(bike, {
             duration: duration,
             repeat: -1,
             repeatDelay: 1, // 1 second pause after bike goes offscreen before restarting
             ease: "none",
             motionPath: {
-              path: "#motionPath",
-              align: "#motionPath",
+              path: motionPath,
+              align: motionPath,
               autoRotate: true,
               alignOrigin: [0.5, 1],
             },
@@ -272,6 +280,7 @@
 
         // Parallax Mouse Movement (Persistent)
         document.addEventListener("mousemove", (e) => {
+          if (typeof gsap === 'undefined') return;
           const { clientX, clientY } = e;
           const centerX = window.innerWidth / 2;
           const centerY = window.innerHeight / 2;
@@ -293,6 +302,12 @@
       function initPageAnimations() {
         // Scroll to top
         window.scrollTo(0, 0);
+
+        // Guard against GSAP not being loaded yet
+        if (typeof gsap === 'undefined') {
+          updateNavState();
+          return;
+        }
 
         // Stagger items entrance
         const staggerItems = document.querySelectorAll(".stagger-item");
@@ -373,22 +388,45 @@
 
       // --- Initialization ---
 
-      // 1. Init Persistent Animations
-      initBackgroundAnimations();
+      var swupInstance = null;
 
-      // 2. Init Swup
-      const swupInstance = new Swup({
-        containers: ["#swup"],
-        plugins: [new SwupHeadPlugin()],
-      });
+      // Wait for Swup to be available
+      function waitForSwup(callback) {
+        if (typeof Swup !== 'undefined' && typeof SwupHeadPlugin !== 'undefined') {
+          callback();
+        } else {
+          setTimeout(function() { waitForSwup(callback); }, 50);
+        }
+      }
 
-      // 3. Hooks
-      swupInstance.hooks.on("content:replace", () => {
-        initPageAnimations();
-      });
+      // Initialize everything once dependencies are loaded
+      function initAll() {
+        // Wait for GSAP to load, then initialize animations
+        waitForGSAP(function() {
+          gsap.registerPlugin(MotionPathPlugin);
+          initBackgroundAnimations();
+          initPageAnimations();
+        });
 
-      // 4. Run Page Animations on First Load
-      initPageAnimations();
+        // Wait for Swup to load, then initialize page transitions
+        waitForSwup(function() {
+          swupInstance = new Swup({
+            containers: ["#swup"],
+            plugins: [new SwupHeadPlugin()],
+          });
+
+          swupInstance.hooks.on("content:replace", function() {
+            initPageAnimations();
+          });
+        });
+      }
+
+      // Start initialization
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+      } else {
+        initAll();
+      }
 
       // 5. Manual Override for Brand Link (Prevent Flash)
       // We expose this globally and call it via onclick in HTML to ensure it captures the event unconditionally.
