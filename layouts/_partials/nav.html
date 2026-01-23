@@ -1,0 +1,30 @@
+{{/* Site navigation with brand logo and menu */}}
+<nav class="p-8 flex flex-col md:flex-row justify-between items-center z-50 gap-6">
+  <a
+    id="brand-link"
+    href="/"
+    onclick="if(window.handleBrandClick) window.handleBrandClick(event)"
+    data-no-swup
+    class="group cursor-pointer no-underline hidden md:block"
+  >
+    <h2 class="text-3xl brand-font transition-colors duration-300 text-slate-500 md:hover:text-slate-800">
+      DUSTIN<span class="text-green-600">.</span>MICHELS
+    </h2>
+    <div class="h-1 w-full bg-slate-800 scale-x-0 md:group-hover:scale-x-100 transition-transform origin-left"></div>
+  </a>
+
+  <div class="flex space-x-6 md:space-x-10 text-sm font-bold uppercase tracking-widest">
+    {{ $currentPage := . }}
+    {{ range .Site.Menus.main }}
+      {{ $active := or ($currentPage.IsMenuCurrent .Menu .) ($currentPage.HasMenuCurrent .Menu .) }}
+      {{/* Prevent Home from being active on all pages */}}
+      {{ if and .Page .Page.IsHome }}
+        {{ $active = $currentPage.IsHome }}
+      {{ end }}
+      <a
+        href="{{ .URL }}"
+        class="nav-link pb-1 transition-all {{ if $active }}text-green-600{{ else }}text-slate-500 md:hover:text-slate-800{{ end }}"
+      >{{ .Name }}</a>
+    {{ end }}
+  </div>
+</nav>

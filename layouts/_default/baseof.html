@@ -1,106 +1,11 @@
 <!doctype html>
 <html lang="{{ .Site.LanguageCode }}">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ .Title }}</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Swup -->
-    <script defer src="https://unpkg.com/swup@4"></script>
-    <script defer src="https://unpkg.com/@swup/head-plugin@2"></script>
-    <!-- GSAP (defer to ensure DOM is ready) -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Outfit:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS via Hugo Pipes -->
-    {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
-    <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+    {{ partial "head.html" . }}
   </head>
   <body class="map-grid min-h-screen bg-green-50 overflow-x-hidden">
     <div id="app" class="relative min-h-screen flex flex-col">
-      <!-- Background Decorations (Parallax via GSAP) -->
-      <div
-        class="parallax-container fixed inset-0 pointer-events-none overflow-hidden"
-      >
-        <!-- Very low depth for clouds: Minimal movement -->
-        <span
-          class="floating-element text-6xl"
-          style="top: 15%; left: 10%"
-          data-depth="0.05"
-          >☁️</span
-        >
-        <span
-          class="floating-element text-4xl"
-          style="top: 25%; right: 15%"
-          data-depth="0.07"
-          >☁️</span
-        >
-        <span
-          class="floating-element text-5xl"
-          style="top: 45%; left: 75%"
-          data-depth="0.06"
-          >☁️</span
-        >
-
-        <!-- New Clouds (Desktop Only to avoid clutter) -->
-        <span
-          class="floating-element text-5xl hidden md:block"
-          style="top: 8%; left: 45%"
-          data-depth="0.04"
-          >☁️</span
-        >
-        <span
-          class="floating-element text-4xl hidden md:block"
-          style="top: 12%; right: 35%"
-          data-depth="0.08"
-          >☁️</span
-        >
-        <span
-          class="floating-element text-6xl hidden md:block"
-          style="top: 32%; left: 2%"
-          data-depth="0.05"
-          >☁️</span
-        >
-
-        <!-- Grounded items: Virtually stationary -->
-        <span
-          class="static-decoration text-5xl hidden md:block"
-          style="bottom: 20%; left: 15%"
-          >🌳</span
-        >
-        <span
-          class="static-decoration text-7xl hidden md:block"
-          style="bottom: 10%; right: 10%"
-          >🏢</span
-        >
-
-        <!-- New Ground Items (Desktop Only) -->
-        <span
-          class="static-decoration text-6xl hidden md:block"
-          style="bottom: 16%; left: 25%"
-          >🌲</span
-        >
-        <span
-          class="static-decoration text-5xl hidden md:block"
-          style="bottom: 12%; right: 22%"
-          >🏠</span
-        >
-        <span
-          class="static-decoration text-5xl hidden md:block"
-          style="bottom: 18%; left: 6%"
-          >🌳</span
-        >
-        <span
-          class="static-decoration text-6xl hidden md:block"
-          style="bottom: 8%; right: 2%"
-          >🏢</span
-        >
-      </div>
+      {{ partial "decorations.html" . }}
 
       <!-- Animated Bike Path Layer -->
       <div class="fixed inset-0 pointer-events-none z-0 opacity-30">
@@ -130,47 +35,7 @@
         </svg>
       </div>
 
-      <!-- Navigation -->
-      <nav
-        class="p-8 flex flex-col md:flex-row justify-between items-center z-50 gap-6"
-      >
-        <a
-          id="brand-link"
-          href="/"
-          onclick="if(window.handleBrandClick) window.handleBrandClick(event)"
-          data-no-swup
-          class="group cursor-pointer no-underline hidden md:block"
-        >
-          <h2
-            class="text-3xl brand-font transition-colors duration-300 text-slate-500 md:hover:text-slate-800"
-          >
-            DUSTIN<span
-              class="text-green-600"
-              >.</span
-            >MICHELS
-          </h2>
-          <div
-            class="h-1 w-full bg-slate-800 scale-x-0 md:group-hover:scale-x-100 transition-transform origin-left"
-          ></div>
-        </a>
-        <div
-          class="flex space-x-6 md:space-x-10 text-sm font-bold uppercase tracking-widest"
-        >
-          {{ $currentPage := . }} {{ range .Site.Menus.main }} {{ $active := or
-          ($currentPage.IsMenuCurrent .Menu .) ($currentPage.HasMenuCurrent
-          .Menu .) }} {{/* Prevent Home from being active on all pages due to
-          HasMenuCurrent */}} {{ if and .Page .Page.IsHome }} {{ $active =
-          $currentPage.IsHome }} {{ end }}
-
-          <a
-            href="{{ .URL }}"
-            class="nav-link pb-1 transition-all {{ if $active }}text-green-600{{ else }}text-slate-500 md:hover:text-slate-800{{ end }}"
-          >
-            {{ .Name }}
-          </a>
-          {{ end }}
-        </div>
-      </nav>
+      {{ partial "nav.html" . }}
 
       <!-- Main Content -->
       <main
@@ -182,26 +47,9 @@
         </div>
       </main>
 
-      <!-- Footer -->
-      <footer
-        class="p-12 text-center text-slate-400 font-bold uppercase tracking-tighter text-xs relative z-10"
-      >
-        <div class="flex justify-center gap-8 mb-4">
-          {{ range .Site.Params.social }}
-          <a
-            href="{{ .url }}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="px-3 py-1 bg-green-200/50 hover:bg-green-300/50 text-green-900 font-bold rounded-md transition-colors"
-            >{{ .name }}</a
-          >
-          {{ end }}
-        </div>
-        <p>&copy; {{ now.Year }} {{ .Site.Params.footer_text }}</p>
-      </footer>
+      {{ partial "footer.html" . }}
     </div>
 
-    {{ $js := resources.Get "js/main.js" | js.Build (dict "minify" true) | fingerprint }}
-    <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+    {{ partial "head/js.html" . }}
   </body>
 </html>

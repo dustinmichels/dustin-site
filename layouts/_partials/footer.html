@@ -1,0 +1,14 @@
+{{/* Site footer with social links and copyright */}}
+<footer class="p-12 text-center text-slate-400 font-bold uppercase tracking-tighter text-xs relative z-10">
+  <div class="flex justify-center gap-8 mb-4">
+    {{ range .Site.Params.social }}
+      <a
+        href="{{ .url }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-3 py-1 bg-green-200/50 hover:bg-green-300/50 text-green-900 font-bold rounded-md transition-colors"
+      >{{ .name }}</a>
+    {{ end }}
+  </div>
+  <p>&copy; {{ now.Year }} {{ .Site.Params.footer_text }}</p>
+</footer>
