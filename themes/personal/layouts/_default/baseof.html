@@ -6,8 +6,9 @@
     <title>{{ .Title }}</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Vue 3 -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Swup -->
+    <script src="https://unpkg.com/swup@4"></script>
+    <script src="https://unpkg.com/@swup/head-plugin@2"></script>
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
@@ -72,17 +73,21 @@
             opacity: 0.6;
         }
 
-        /* Vue Transitions */
-        .page-fade-enter-active, .page-fade-leave-active {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Swup Transitions */
+        .transition-fade {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            opacity: 1;
+            transform: translateY(0);
         }
-        .page-fade-enter-from {
+        
+        html.is-changing .transition-fade {
             opacity: 0;
-            transform: translateY(30px) scale(0.95);
+            transform: translateY(20px);
         }
-        .page-fade-leave-to {
-            opacity: 0;
-            transform: translateY(-30px) scale(0.95);
+
+        /* Active Nav Link Styles for JS toggling */
+        .nav-link.active-link {
+            color: #16a34a; /* text-green-600 */
         }
     </style>
 </head>
@@ -139,12 +144,10 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="flex-grow flex items-center justify-center p-6 relative z-10 w-full">
-            <transition name="page-fade" mode="out-in" @enter="onPageEnter">
-                 <div :key="'{{ .RelPermalink }}'" class="w-full flex justify-center">
-                    {{ block "main" . }}{{ end }}
-                </div>
-            </transition>
+        <main id="swup" class="transition-fade flex-grow flex items-center justify-center p-6 relative z-10 w-full">
+            <div class="w-full flex justify-center">
+                {{ block "main" . }}{{ end }}
+            </div>
         </main>
 
         <!-- Footer -->
@@ -159,70 +162,159 @@
     </div>
 
     <script>
-        const { createApp, ref, onMounted } = Vue;
+        // Initialize GSAP Plugin
+        gsap.registerPlugin(MotionPathPlugin);
 
-        createApp({
-            setup() {
-                const onPageEnter = (el) => {
-                    // GSAP Entrance for elements
-                    gsap.from(el.querySelectorAll('.stagger-item'), {
-                        y: 30,
-                        opacity: 0,
-                        duration: 0.8,
-                        stagger: 0.2,
-                        ease: "back.out(1.7)"
-                    });
-                };
+        // --- Animation Functions ---
 
-                onMounted(() => {
-                    gsap.registerPlugin(MotionPathPlugin);
+        function initBackgroundAnimations() {
+            // Bike Rider Path Animation (Persistent)
+            const bike = document.querySelector("#bike-rider-gsap");
+            if (bike) {
+                gsap.to(bike, {
+                    duration: 20,
+                    repeat: -1,
+                    ease: "none",
+                    motionPath: {
+                        path: "#motionPath",
+                        align: "#motionPath",
+                        autoRotate: true,
+                        alignOrigin: [0.5, 1]
+                    }
+                });
+            }
 
-                    // Hero Text Animation
-                    gsap.from(".hero-title", {
-                        scale: 0.8,
-                        opacity: 0,
+            // Parallax Mouse Movement (Persistent)
+            document.addEventListener("mousemove", (e) => {
+                const { clientX, clientY } = e;
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+
+                document.querySelectorAll(".floating-element").forEach(el => {
+                    const depth = parseFloat(el.getAttribute("data-depth") || 0);
+                    const moveX = (clientX - centerX) * depth;
+                    const moveY = (clientY - centerY) * depth;
+                    gsap.to(el, {
+                        x: moveX,
+                        y: moveY,
                         duration: 1.2,
-                        ease: "elastic.out(1, 0.5)"
-                    });
-
-                    // Bike Rider Path Animation
-                    gsap.to("#bike-rider-gsap", {
-                        duration: 20,
-                        repeat: -1,
-                        ease: "none",
-                        motionPath: {
-                            path: "#motionPath",
-                            align: "#motionPath",
-                            autoRotate: true,
-                            alignOrigin: [0.5, 1]
-                        }
-                    });
-
-                    // Parallax Mouse Movement
-                    document.addEventListener("mousemove", (e) => {
-                        const { clientX, clientY } = e;
-                        const centerX = window.innerWidth / 2;
-                        const centerY = window.innerHeight / 2;
-
-                        document.querySelectorAll(".floating-element").forEach(el => {
-                            const depth = el.getAttribute("data-depth");
-                            const moveX = (clientX - centerX) * depth;
-                            const moveY = (clientY - centerY) * depth;
-                            gsap.to(el, {
-                                x: moveX,
-                                y: moveY,
-                                duration: 1.2,
-                                ease: "power2.out"
-                            });
-                        });
+                        ease: "power2.out"
                     });
                 });
+            });
+        }
 
-                return {
-                    onPageEnter
+        function initPageAnimations() {
+            // Scroll to top
+            window.scrollTo(0, 0);
+
+            // Stagger items entrance
+            const staggerItems = document.querySelectorAll('.stagger-item');
+            if (staggerItems.length > 0) {
+                gsap.from(staggerItems, {
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: "back.out(1.7)"
+                });
+            }
+
+            // Hero Title Animation (if present)
+            const heroTitle = document.querySelector(".hero-title");
+            if (heroTitle) {
+                gsap.from(heroTitle, {
+                    scale: 0.8,
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: "elastic.out(1, 0.5)"
+                });
+            }
+            
+            // Also animate blob images if they exist (mimic old site)
+            const blobs = document.querySelectorAll('.blob');
+            if (blobs.length > 0) {
+                 gsap.from(blobs, { 
+                    duration: 1.5, 
+                    scale: 0.8, 
+                    opacity: 0, 
+                    stagger: 0.2, 
+                    ease: "elastic.out(1, 0.3)" 
+                });
+            }
+            
+            // Re-run Nav Update
+            updateNavState();
+        }
+
+        function updateNavState() {
+            const currentPath = window.location.pathname.replace(/\/$/, ""); // Normalize trailing slash
+            
+            // Update Logo Color
+            const brandTitle = document.querySelector('.brand-font');
+            const dot = brandTitle ? brandTitle.querySelector('span') : null;
+            if (brandTitle && dot) {
+                const isHome = currentPath === "" || currentPath === "/index.html";
+                if (isHome) {
+                    brandTitle.classList.add('text-green-600');
+                    brandTitle.classList.remove('text-slate-500', 'text-slate-800');
+                    dot.classList.add('text-slate-800');
+                    dot.classList.remove('text-green-600');
+                } else {
+                    brandTitle.classList.remove('text-green-600');
+                    brandTitle.classList.add('text-slate-500'); // Base state
+                    // Hover effect is handled by CSS, strict class toggle for color might fight with hover.
+                    // Let's simple toggle the main color
+                    dot.classList.remove('text-slate-800');
+                    dot.classList.add('text-green-600');
                 }
             }
-        }).mount('#app');
+
+            // Update Nav Links
+            document.querySelectorAll('nav a.nav-link').forEach(link => {
+                const href = link.getAttribute('href').replace(/\/$/, "");
+                // Simple active check
+                // Note: This relies on the href being relative or matching.
+                // Hugo often outputs full URLs. Let's check `href.endsWith(path)`
+                
+                let isActive = false;
+                if (currentPath === "" && (href.endsWith("/") || href.endsWith("dustinmichels.com"))) {
+                     // Home case - usually explicit home link
+                     // If this link is home
+                     if (link.textContent.trim().toLowerCase() === "home" || href === "/" || href === "") isActive = true;
+                } else if (currentPath !== "" && href.includes(currentPath)) {
+                    isActive = true;
+                }
+
+                if (isActive) {
+                    link.classList.add('text-green-600');
+                    link.classList.remove('text-slate-500');
+                } else {
+                    link.classList.remove('text-green-600');
+                    link.classList.add('text-slate-500');
+                }
+            });
+        }
+
+        // --- Initialization ---
+
+        // 1. Init Persistent Animations
+        initBackgroundAnimations();
+
+        // 2. Init Swup
+        const swup = new Swup({
+            containers: ["#swup"],
+            plugins: [new SwupHeadPlugin()]
+        });
+
+        // 3. Hooks
+        swup.hooks.on('content:replace', () => {
+            initPageAnimations();
+        });
+
+        // 4. Run Page Animations on First Load
+        initPageAnimations();
+
     </script>
 </body>
 </html>
