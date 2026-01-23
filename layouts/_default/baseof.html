@@ -28,7 +28,7 @@
         background-color: #f0fdf4; /* Very light green from original */
         overflow-x: hidden;
         cursor: crosshair;
-      }
+      } 
       h1,
       h2,
       h3,
@@ -154,7 +154,7 @@
           <path
             id="motionPath"
             class="bike-path-dashed"
-            d="M-100,600 C200,600 400,100 700,400 S1100,700 1500,200"
+            d="M-100,600 C200,600 400,100 700,400 S900,650 1200,300"
             fill="none"
             stroke="#22c55e"
             stroke-width="4"
@@ -251,9 +251,15 @@
         // Bike Rider Path Animation (Persistent)
         const bike = document.querySelector("#bike-rider-gsap");
         if (bike) {
+          // Shorter durations so bike exits screen faster, then 1s delay before restart
+          // Mobile has shorter path visibility, so vanishes earlier
+          const isMobile = window.innerWidth < 768;
+          const duration = isMobile ? 8 : 10;
+          
           gsap.to(bike, {
-            duration: 20,
+            duration: duration,
             repeat: -1,
+            repeatDelay: 1, // 1 second pause after bike goes offscreen before restarting
             ease: "none",
             motionPath: {
               path: "#motionPath",
