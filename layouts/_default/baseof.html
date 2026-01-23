@@ -69,11 +69,20 @@
       .bike-path-dashed {
         stroke-dasharray: 12;
         animation: dash 30s linear infinite;
+        will-change: stroke-dashoffset;
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
       }
       @keyframes dash {
         to {
           stroke-dashoffset: -240;
         }
+      }
+
+      #bike-svg {
+        shape-rendering: geometricPrecision;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
       }
 
       .floating-element,
