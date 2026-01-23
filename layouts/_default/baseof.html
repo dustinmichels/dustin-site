@@ -264,7 +264,7 @@
       // --- Animation Functions ---
 
       // Path data defined in JS to avoid Hugo minifier corruption
-      var BIKE_PATH_DATA = "M-100,600 C200,600 400,100 700,400 S900,650 1200,300";
+      var BIKE_PATH_DATA = "M-100,600 C200,600 400,100 700,400 S900,650 1200,300 S1400,150 1500,200";
 
       function initBackgroundAnimations() {
         // Bike Rider Path Animation (Persistent)
@@ -292,7 +292,7 @@
               path: motionPath,
               align: motionPath,
               autoRotate: true,
-              alignOrigin: [0.5, 0.5],
+              alignOrigin: [0.5, 0.8],
             },
           });
         }
