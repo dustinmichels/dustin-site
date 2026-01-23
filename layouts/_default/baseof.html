@@ -68,10 +68,15 @@
 
       .bike-path-dashed {
         stroke-dasharray: 12;
-        animation: dash 30s linear infinite;
         will-change: stroke-dashoffset;
         transform: translateZ(0);
         -webkit-transform: translateZ(0);
+      }
+      /* CSS animation only on desktop - mobile uses GSAP for smoother rendering */
+      @media (min-width: 768px) {
+        .bike-path-dashed {
+          animation: dash 30s linear infinite;
+        }
       }
       @keyframes dash {
         to {
@@ -139,6 +144,26 @@
           >☁️</span
         >
 
+        <!-- New Clouds (Desktop Only to avoid clutter) -->
+        <span
+          class="floating-element text-5xl hidden md:block"
+          style="top: 8%; left: 45%"
+          data-depth="0.04"
+          >☁️</span
+        >
+        <span
+          class="floating-element text-4xl hidden md:block"
+          style="top: 12%; right: 35%"
+          data-depth="0.08"
+          >☁️</span
+        >
+        <span
+          class="floating-element text-6xl hidden md:block"
+          style="top: 32%; left: 2%"
+          data-depth="0.05"
+          >☁️</span
+        >
+
         <!-- Grounded items: Virtually stationary -->
         <span
           class="static-decoration text-5xl hidden md:block"
@@ -148,6 +173,28 @@
         <span
           class="static-decoration text-7xl hidden md:block"
           style="bottom: 10%; right: 10%"
+          >🏢</span
+        >
+
+        <!-- New Ground Items (Desktop Only) -->
+        <span
+          class="static-decoration text-6xl hidden md:block"
+          style="bottom: 16%; left: 25%"
+          >🌲</span
+        >
+        <span
+          class="static-decoration text-5xl hidden md:block"
+          style="bottom: 12%; right: 22%"
+          >🏠</span
+        >
+        <span
+          class="static-decoration text-5xl hidden md:block"
+          style="bottom: 18%; left: 6%"
+          >🌳</span
+        >
+        <span
+          class="static-decoration text-6xl hidden md:block"
+          style="bottom: 8%; right: 2%"
           >🏢</span
         >
       </div>
@@ -292,9 +339,19 @@
               path: motionPath,
               align: motionPath,
               autoRotate: true,
-              alignOrigin: [0.5, 0.8],
+              alignOrigin: [0.5, 0.85],
             },
           });
+
+          // On mobile, use GSAP for dash animation (smoother than CSS)
+          if (isMobile) {
+            gsap.to(motionPath, {
+              strokeDashoffset: -240,
+              duration: 30,
+              repeat: -1,
+              ease: "none",
+            });
+          }
         }
 
         // Parallax Mouse Movement (Persistent)
