@@ -1,9 +1,10 @@
 {{ define "main" }}
 <div class="max-w-4xl w-full">
-    <div class="grid md:grid-cols-2 gap-12 items-center">
+    <div class="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-12 items-center">
         
-        <!-- Profile Image & Deco (Order 2 mobile, Order 1 Desktop) -->
-        <div class="order-2 md:order-1 flex justify-center">
+        <!-- Profile Image & Deco -->
+        <!-- Mobile: Order 3 (after Title/Subtitle, before Tags). Desktop: Order 1 (Left column) -->
+        <div class="order-3 md:order-1 flex justify-center w-full">
             <div class="relative group">
                 <!-- Blobs: Yellow & Blue -->
                 <div class="absolute inset-0 bg-yellow-300 blob transform rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
@@ -15,20 +16,29 @@
                 </div>
 
                 <!-- Decorative elements -->
-
+                
             </div>
         </div>
 
-        <!-- Text Content (Order 1 mobile, Order 2 Desktop) -->
-        <div class="order-1 md:order-2 space-y-6">
-            <h1 class="text-5xl md:text-7xl font-extrabold text-slate-800 leading-tight">
+        <!-- Text Content Wrapper -->
+        <!-- Mobile: 'contents' so children are direct flex items. Desktop: 'block' (right column) -->
+        <div class="contents md:block md:order-2 space-y-6">
+            
+            <!-- Title -->
+            <!-- Mobile: Order 1. Desktop: Normal flow inside wrapper -->
+            <h1 class="order-1 text-5xl md:text-7xl font-extrabold text-slate-800 leading-tight mb-2 md:mb-6">
                 {{ .Site.Params.hero_title | safeHTML }}
             </h1>
-            <p class="text-xl md:text-2xl text-slate-700 leading-relaxed">
+
+            <!-- Subtitle -->
+            <!-- Mobile: Order 2. Desktop: Normal flow inside wrapper -->
+            <p class="order-2 text-xl md:text-2xl text-slate-700 leading-relaxed mb-6 md:mb-6">
                 {{ .Site.Params.hero_subtitle | safeHTML }}
             </p>
             
-            <div class="flex flex-wrap gap-2">
+            <!-- Tags -->
+            <!-- Mobile: Order 4. Desktop: Normal flow inside wrapper -->
+            <div class="order-4 flex flex-wrap gap-2 mb-6 md:mb-6">
                 {{ range .Site.Params.tags }}
                 <span class="bg-white px-4 py-2 rounded-full border-2 border-slate-200 text-sm font-bold text-slate-600 hover:border-green-400 hover:text-green-600 transition-colors cursor-default">
                     {{ . }}
@@ -36,7 +46,9 @@
                 {{ end }}
             </div>
 
-            <div class="bg-yellow-50 p-6 rounded-3xl border-2 border-dashed border-yellow-400 shadow-sm">
+            <!-- Mission -->
+            <!-- Mobile: Order 5. Desktop: Normal flow inside wrapper -->
+            <div class="order-5 bg-yellow-50 p-6 rounded-3xl border-2 border-dashed border-yellow-400 shadow-sm">
                 <h3 class="font-bold text-yellow-800 mb-2 text-xl">{{ .Site.Params.mission_title }}</h3>
                 <p class="text-slate-700">
                     {{ .Site.Params.mission_text | safeHTML }}

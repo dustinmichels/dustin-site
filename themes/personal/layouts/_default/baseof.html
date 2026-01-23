@@ -142,9 +142,9 @@
         <!-- Footer -->
         <footer class="p-12 text-center text-slate-400 font-bold uppercase tracking-tighter text-xs">
             <div class="flex justify-center gap-8 mb-4">
-                <a href="#" class="hover:text-green-600">Twitter</a>
-                <a href="#" class="hover:text-green-600">GitHub</a>
-                <a href="#" class="hover:text-green-600">LinkedIn</a>
+                {{ range .Site.Params.social }}
+                <a href="{{ .url }}" target="_blank" rel="noopener noreferrer" class="hover:text-green-600">{{ .name }}</a>
+                {{ end }}
             </div>
             <p>&copy; {{ now.Year }} {{ .Site.Params.footer_text }}</p>
         </footer>
