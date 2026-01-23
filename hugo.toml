@@ -6,10 +6,14 @@ title = 'Dustin Michels'
 tags = [
     "data",
     "maps",
+    "kids",
+    "transporation",
     "mobility",
     "sustainability",
     "social justice",
     "child development",
+    "design",
+    "software",
 ]
 social = [
     { name = "Bluesky", url = "https://bsky.app/profile/dustinmichels.bsky.social" },
