@@ -1,7 +1,6 @@
 baseURL = 'https://dustinsite.netlify.app'
 languageCode = 'en-us'
 title = 'Dustin Michels'
-theme = 'personal'
 
 [params]
 tags = [
