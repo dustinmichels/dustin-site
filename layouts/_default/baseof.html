@@ -179,13 +179,13 @@
           href="/"
           onclick="if(window.handleBrandClick) window.handleBrandClick(event)"
           data-no-swup
-          class="group cursor-pointer no-underline block"
+          class="group cursor-pointer no-underline hidden md:block"
         >
           <h2
-            class="text-3xl brand-font transition-colors duration-300 {{ if .IsHome }}text-green-600{{ else }}text-slate-500 md:hover:text-slate-800{{ end }}"
+            class="text-3xl brand-font transition-colors duration-300 text-slate-500 md:hover:text-slate-800"
           >
             DUSTIN<span
-              class="{{ if .IsHome }}text-slate-800{{ else }}text-green-600{{ end }}"
+              class="text-green-600"
               >.</span
             >MICHELS
           </h2>
@@ -331,24 +331,8 @@
         const currentPath = window.location.pathname.replace(/\/$/, ""); // Normalize trailing slash
 
         // Update Logo Color
-        const brandTitle = document.querySelector(".brand-font");
-        const dot = brandTitle ? brandTitle.querySelector("span") : null;
-        if (brandTitle && dot) {
-          const isHome = currentPath === "" || currentPath === "/index.html";
-          if (isHome) {
-            brandTitle.classList.add("text-green-600");
-            brandTitle.classList.remove("text-slate-500", "text-slate-800");
-            dot.classList.add("text-slate-800");
-            dot.classList.remove("text-green-600");
-          } else {
-            brandTitle.classList.remove("text-green-600");
-            brandTitle.classList.add("text-slate-500"); // Base state
-            // Hover effect is handled by CSS, strict class toggle for color might fight with hover.
-            // Let's simple toggle the main color
-            dot.classList.remove("text-slate-800");
-            dot.classList.add("text-green-600");
-          }
-        }
+        // Update Logo Color - REMOVED (Always static now)
+        // logic removed to keep default slate color always
 
         // Update Nav Links
         document.querySelectorAll("nav a.nav-link").forEach((link) => {
@@ -358,21 +342,18 @@
           // Hugo often outputs full URLs. Let's check `href.endsWith(path)`
 
           let isActive = false;
-          if (
-            currentPath === "" &&
-            (href.endsWith("/") || href.endsWith("dustinmichels.com"))
-          ) {
-            // Home case - usually explicit home link
-            // If this link is home
-            if (
-              link.textContent.trim().toLowerCase() === "home" ||
-              href === "/" ||
-              href === ""
-            )
-              isActive = true;
-          } else if (currentPath !== "" && href.includes(currentPath)) {
-            isActive = true;
+          // Match Home
+          if (currentPath === "" && (href === "" || href === "/")) {
+             isActive = true;
           }
+          // Match Other Pages
+          else if (currentPath !== "" && href === currentPath) {
+             isActive = true;
+          }
+           // Fallback for partial matches if needed, but strict is better for top level items
+           else if (currentPath !== "" && href !== "" && currentPath.startsWith(href) && href !== "/") {
+               isActive = true;
+           }
 
           if (isActive) {
             link.classList.add("text-green-600");

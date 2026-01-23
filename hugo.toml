@@ -22,18 +22,22 @@ mission_title = "Current Focus:"
 mission_text = "Safe, sustainable, and child-empowering urban design.<span class=\"block mt-2 font-semibold\">Kids, bikes, and kids on bikes.</span>"
 footer_text = "Dustin Michels"
 
+[[menus.main]]
+name = "HOME"
+pageRef = "/"
+weight = 10
 
 [[menus.main]]
 name = "WRITING"
 pageRef = "/writing"
-weight = 1
+weight = 20
 
 [[menus.main]]
 name = "PORTFOLIO"
 pageRef = "/portfolio"
-weight = 2
+weight = 30
 
 [[menus.main]]
 name = "GAMES"
 pageRef = "/games"
-weight = 3
+weight = 40
