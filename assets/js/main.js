@@ -46,13 +46,18 @@ function initBackgroundAnimations() {
     });
 
     // On mobile, use GSAP for dash animation (smoother than CSS)
+    // Animate exactly one dash pattern (24 = 12 dash + 12 gap) for seamless loop
     if (isMobile) {
-      gsap.to(motionPath, {
-        strokeDashoffset: -240,
-        duration: 30,
-        repeat: -1,
-        ease: "none",
-      });
+      gsap.fromTo(
+        motionPath,
+        { strokeDashoffset: 0 },
+        {
+          strokeDashoffset: -24,
+          duration: 3,
+          repeat: -1,
+          ease: "none",
+        }
+      );
     }
   }
 

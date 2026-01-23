@@ -60,13 +60,17 @@ h3,
 
 @media (min-width: 768px) {
   .bike-path-dashed {
-    animation: dash 30s linear infinite;
+    animation: dash 3s linear infinite;
   }
 }
 
+/* Animate exactly one dash pattern (24 = 12 dash + 12 gap) for seamless loop */
 @keyframes dash {
+  from {
+    stroke-dashoffset: 0;
+  }
   to {
-    stroke-dashoffset: -240;
+    stroke-dashoffset: -24;
   }
 }
 
