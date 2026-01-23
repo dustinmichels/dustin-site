@@ -12,7 +12,21 @@
                 
                 <!-- Image Container -->
                 <div class="relative w-64 h-64 md:w-80 md:h-80 bg-slate-200 blob overflow-hidden border-4 border-white shadow-2xl flex items-center justify-center z-10">
-                    <img src="/img/me.png" alt="Dustin Michels" class="w-full h-full object-cover">
+                    {{ $img := resources.Get "images/me.png" }}
+                    {{ $imgSmall := $img.Resize "256x256 webp q85" }}
+                    {{ $imgMedium := $img.Resize "320x320 webp q85" }}
+                    {{ $imgLarge := $img.Resize "512x512 webp q85" }}
+                    {{ $imgFallback := $img.Resize "320x320 q85" }}
+                    <img 
+                        src="{{ $imgFallback.RelPermalink }}" 
+                        srcset="{{ $imgSmall.RelPermalink }} 256w,
+                                {{ $imgMedium.RelPermalink }} 320w,
+                                {{ $imgLarge.RelPermalink }} 512w"
+                        sizes="(max-width: 768px) 256px, 320px"
+                        alt="Dustin Michels" 
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async">
                 </div>
 
                 <!-- Decorative elements -->

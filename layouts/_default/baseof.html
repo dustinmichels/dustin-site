@@ -146,6 +146,7 @@
       <!-- Animated Bike Path Layer -->
       <div class="fixed inset-0 pointer-events-none z-0 opacity-30">
         <svg
+          id="bike-svg"
           width="100%"
           height="100%"
           viewBox="0 0 1400 800"
@@ -154,20 +155,20 @@
           <path
             id="motionPath"
             class="bike-path-dashed"
-            d="M-100,600 C200,600 400,100 700,400 S900,650 1200,300"
             fill="none"
             stroke="#22c55e"
             stroke-width="4"
             stroke-linecap="round"
           />
+          <!-- Bike inside SVG for proper coordinate alignment -->
+          <text
+            id="bike-rider-gsap"
+            font-size="50"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            style="transform-origin: center"
+          >🚲</text>
         </svg>
-        <div
-          id="bike-rider-gsap"
-          class="absolute text-5xl"
-          style="transform-origin: center"
-        >
-          <span class="inline-block" style="transform: scaleX(-1)">🚲</span>
-        </div>
       </div>
 
       <!-- Navigation -->
@@ -253,27 +254,36 @@
 
       // --- Animation Functions ---
 
+      // Path data defined in JS to avoid Hugo minifier corruption
+      var BIKE_PATH_DATA = "M-100,600 C200,600 400,100 700,400 S900,650 1200,300";
+
       function initBackgroundAnimations() {
         // Bike Rider Path Animation (Persistent)
-        const bike = document.querySelector("#bike-rider-gsap");
-        const motionPath = document.querySelector("#motionPath");
+        var bike = document.querySelector("#bike-rider-gsap");
+        var motionPath = document.querySelector("#motionPath");
 
         if (bike && motionPath && typeof gsap !== 'undefined') {
+          // Set the path data from JS (Hugo minifier corrupts SVG path d attribute)
+          motionPath.setAttribute("d", BIKE_PATH_DATA);
+
           // Shorter durations so bike exits screen faster, then 1s delay before restart
           // Mobile has shorter path visibility, so vanishes earlier
-          const isMobile = window.innerWidth < 768;
-          const duration = isMobile ? 8 : 10;
+          var isMobile = window.innerWidth < 768;
+          var duration = isMobile ? 8 : 10;
+
+          // Set initial position and flip the bike horizontally
+          gsap.set(bike, { scaleX: -1 });
 
           gsap.to(bike, {
             duration: duration,
             repeat: -1,
-            repeatDelay: 1, // 1 second pause after bike goes offscreen before restarting
+            repeatDelay: 1,
             ease: "none",
             motionPath: {
               path: motionPath,
               align: motionPath,
               autoRotate: true,
-              alignOrigin: [0.5, 1],
+              alignOrigin: [0.5, 0.5],
             },
           });
         }
