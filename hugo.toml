@@ -19,7 +19,7 @@ social = [
 ]
 hero_title = "Hi, I'm <span class=\"text-green-600\">Dustin!</span>"
 hero_subtitle = "Cyclist, software engineer, and urban planning master’s student <span class=\"text-blue-600 font-bold\">@ Tufts</span>."
-mission_title = "Current Mission:"
+mission_title = "Current Focus:"
 mission_text = "Safe, sustainable, and child-empowering urban design.<span class=\"block mt-2 font-semibold\">Kids, bikes, and kids on bikes.</span>"
 footer_text = "Dustin Michels"
 
