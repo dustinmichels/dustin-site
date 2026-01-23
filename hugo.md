@@ -1,8 +1,6 @@
 # Hugo Custom Theme Development: Agent Guide
 
-## 1. Project Anatomy
-
-Store site-specific overrides in root and reusable logic in `themes/<name>/`.
+## Layout
 
 ```text
 .
@@ -11,12 +9,6 @@ Store site-specific overrides in root and reusable logic in `themes/<name>/`.
 ├── data/             # Structural data (YAML/JSON) for non-page UI.
 ├── layouts/          # Root overrides (takes precedence over theme).
 ├── static/           # Verbatim files (Favicons, CNAME, static images).
-└── themes/<name>/
-    ├── assets/       # Theme-specific CSS/JS.
-    └── layouts/
-        ├── _default/ # Fallbacks: baseof.html, list.html, single.html.
-        ├── partials/ # Modular UI components.
-        └── index.html # Homepage-specific logic.
 
 ```
 

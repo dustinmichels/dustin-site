@@ -1,22 +1,99 @@
+/* Base body styles */
 body {
-  color: #222;
-  font-family: sans-serif;
-  line-height: 1.5;
-  margin: 1rem;
-  max-width: 768px;
+  font-family: "Outfit", sans-serif;
+  cursor: crosshair;
 }
 
-header {
-  border-bottom: 1px solid #222;
-  margin-bottom: 1rem;
+/* Typography - Fredoka for headings */
+h1,
+h2,
+h3,
+.brand-font {
+  font-family: "Fredoka", sans-serif;
 }
 
-footer {
-  border-top: 1px solid #222;
-  margin-top: 1rem;
+/* Map grid background pattern */
+.map-grid {
+  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-a {
-  color: #00e;
-  text-decoration: none;
+/* Organic blob shape */
+.blob {
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+}
+
+/* Retro offset shadow */
+.custom-shadow {
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Nav link underline animation */
+.nav-link {
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 4px;
+  bottom: -4px;
+  left: 0;
+  background-color: currentColor;
+  transition: width 0.3s;
+}
+
+@media (min-width: 768px) {
+  .nav-link:hover::after {
+    width: 100%;
+  }
+}
+
+/* Bike path SVG animation */
+.bike-path-dashed {
+  stroke-dasharray: 12;
+  will-change: stroke-dashoffset;
+  transform: translateZ(0);
+}
+
+@media (min-width: 768px) {
+  .bike-path-dashed {
+    animation: dash 30s linear infinite;
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+#bike-svg {
+  shape-rendering: geometricPrecision;
+  backface-visibility: hidden;
+}
+
+/* Background decorations */
+.floating-element,
+.static-decoration {
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* Swup page transitions */
+.transition-fade {
+  transition:
+    opacity 0.4s ease-in-out,
+    transform 0.4s ease-in-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.is-changing .transition-fade {
+  opacity: 0;
+  transform: translateY(20px);
 }
