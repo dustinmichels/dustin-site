@@ -45,16 +45,6 @@ function initBackgroundAnimations() {
       },
     });
 
-    // On mobile, use GSAP for dash animation (smoother than CSS)
-    // Animate to a large offset without repeat to avoid the "jump" when looping
-    // Speed: 24 units / 3 seconds = 8 units/sec (matches desktop CSS)
-    if (isMobile) {
-      gsap.to(motionPath, {
-        strokeDashoffset: -240000,
-        duration: 30000,
-        ease: "none",
-      });
-    }
   }
 
   // Parallax Mouse Movement (Persistent)
