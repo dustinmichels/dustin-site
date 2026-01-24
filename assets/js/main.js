@@ -45,6 +45,23 @@ function initBackgroundAnimations() {
       },
     });
 
+    // Dash animation using requestAnimationFrame for smooth mobile performance
+    // Uses modulo to wrap continuously - no reset/jump point
+    var dashOffset = 0;
+    var lastTime = performance.now();
+    var speed = 8; // units per second (24 units / 3 seconds)
+
+    function animateDash(currentTime) {
+      var deltaTime = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+
+      dashOffset = (dashOffset - speed * deltaTime) % 24;
+      motionPath.style.strokeDashoffset = dashOffset;
+
+      requestAnimationFrame(animateDash);
+    }
+
+    requestAnimationFrame(animateDash);
   }
 
   // Parallax Mouse Movement (Persistent)

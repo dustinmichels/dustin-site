@@ -51,22 +51,10 @@ h3,
   }
 }
 
-/* Bike path SVG animation */
+/* Bike path SVG animation - animated via JS for mobile compatibility */
 .bike-path-dashed {
   stroke-dasharray: 12;
-  will-change: stroke-dashoffset;
   transform: translateZ(0);
-  animation: dash 3s linear infinite;
-}
-
-/* Animate exactly one dash pattern (24 = 12 dash + 12 gap) for seamless loop */
-@keyframes dash {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: -24;
-  }
 }
 
 #bike-svg {
