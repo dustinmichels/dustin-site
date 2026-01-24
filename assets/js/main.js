@@ -45,20 +45,31 @@ function initBackgroundAnimations() {
       },
     });
 
-    // Dash animation using time-based calculation (not accumulation)
-    // This approach calculates offset directly from elapsed time, avoiding
-    // all timing/throttling issues that cause jumps on mobile.
-    // The animation will "catch up" when resuming from throttle, but
-    // will NEVER jump backward because elapsed time is monotonic.
-    var startTime = performance.now();
-    var speed = 8; // units per second
+    // Bike dash animation
+    // We use a clamped delta-time accumulation to drive the dash offset.
+    // This ensures smooth motion on desktop while preventing visual glitches
+    // on mobile when the browser throttles frames (preventing "wagon wheel" jumps).
+    // Dash animation using clamped delta time
+    // This fixes the "skipping/jumping" issue on mobile by preventing large
+    // time steps when the browser throttles the animation (e.g. tab switching).
+    var lastTime = performance.now();
+    var speed = 8;
+    var dashOffset = 0;
 
     function animateDash(currentTime) {
-      // Calculate offset directly from total elapsed time
-      // No modulo - browsers handle large values fine, and this avoids wrap-around jumps
-      var elapsedSeconds = (currentTime - startTime) / 1000;
-      var dashOffset = -(speed * elapsedSeconds);
+      // Calculate delta time in seconds
+      var deltaTime = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
 
+      // Clamp deltaTime to ~0.1s
+      // If the browser throttles (large delta), we effectively overly "slew"
+      // the animation to avoid the visual artifact ("wagon wheel effect")
+      // where a large jump matches the pattern period and looks like reverse motion.
+      if (deltaTime > 0.1) {
+        deltaTime = 0.1;
+      }
+
+      dashOffset -= speed * deltaTime;
       motionPath.style.strokeDashoffset = dashOffset;
       requestAnimationFrame(animateDash);
     }
