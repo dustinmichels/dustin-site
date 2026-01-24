@@ -45,21 +45,21 @@ function initBackgroundAnimations() {
       },
     });
 
-    // Dash animation using requestAnimationFrame for smooth mobile performance
-    // Cap deltaTime to prevent jumps when browser throttles animation
-    var dashOffset = 0;
-    var lastTime = performance.now();
-    var speed = 8; // units per second (24 units / 3 seconds)
+    // Dash animation using time-based calculation (not accumulation)
+    // This approach calculates offset directly from elapsed time, avoiding
+    // all timing/throttling issues that cause jumps on mobile.
+    // The animation will "catch up" when resuming from throttle, but
+    // will NEVER jump backward because elapsed time is monotonic.
+    var startTime = performance.now();
+    var speed = 8; // units per second
 
     function animateDash(currentTime) {
-      // Cap deltaTime at 100ms to prevent jumps when browser throttles
-      var deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
-      lastTime = currentTime;
+      // Calculate offset directly from total elapsed time
+      // No modulo - browsers handle large values fine, and this avoids wrap-around jumps
+      var elapsedSeconds = (currentTime - startTime) / 1000;
+      var dashOffset = -(speed * elapsedSeconds);
 
-      // Just keep decreasing - no modulo needed, browser handles large values fine
-      dashOffset -= speed * deltaTime;
       motionPath.style.strokeDashoffset = dashOffset;
-
       requestAnimationFrame(animateDash);
     }
 

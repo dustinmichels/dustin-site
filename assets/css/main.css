@@ -55,6 +55,7 @@ h3,
 .bike-path-dashed {
   stroke-dasharray: 12;
   transform: translateZ(0);
+  will-change: stroke-dashoffset;
 }
 
 #bike-svg {
