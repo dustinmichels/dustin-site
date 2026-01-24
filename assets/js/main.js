@@ -46,35 +46,24 @@ function initBackgroundAnimations() {
     });
 
     // Bike dash animation
-    // We use a clamped delta-time accumulation to drive the dash offset.
-    // This ensures smooth motion on desktop while preventing visual glitches
-    // on mobile when the browser throttles frames (preventing "wagon wheel" jumps).
-    // Dash animation using clamped delta time
-    // This fixes the "skipping/jumping" issue on mobile by preventing large
-    // time steps when the browser throttles the animation (e.g. tab switching).
-    var lastTime = performance.now();
-    var speed = 8;
-    var dashOffset = 0;
+    // We utilize GSAP's built-in tick management and lag smoothing to solve the mobile jump issue.
+    // 1. lagSmoothing(100, 16) ensures that if the browser throttles (tab switch/scroll),
+    //    the animation effectively pauses/resumes smoothly instead of jumping forward.
+    // 2. We animate to a huge value (no loop reset) to avoid any potential "loop point" glitches.
+    
+    // Configure global lag smoothing (affects all GSAP animations, which is desired for mobile)
+    gsap.ticker.lagSmoothing(100, 16);
 
-    function animateDash(currentTime) {
-      // Calculate delta time in seconds
-      var deltaTime = (currentTime - lastTime) / 1000;
-      lastTime = currentTime;
-
-      // Clamp deltaTime to ~0.1s
-      // If the browser throttles (large delta), we effectively overly "slew"
-      // the animation to avoid the visual artifact ("wagon wheel effect")
-      // where a large jump matches the pattern period and looks like reverse motion.
-      if (deltaTime > 0.1) {
-        deltaTime = 0.1;
-      }
-
-      dashOffset -= speed * deltaTime;
-      motionPath.style.strokeDashoffset = dashOffset;
-      requestAnimationFrame(animateDash);
-    }
-
-    requestAnimationFrame(animateDash);
+    // Animate indefinitely
+    // speed = 8 units/second
+    // distance = 100,000 units
+    // duration = 12,500 seconds (~3.5 hours)
+    gsap.to(motionPath, {
+      strokeDashoffset: -100000,
+      duration: 12500, 
+      ease: "none",
+      repeat: -1, // Repeat after 3.5 hours (effectively infinite)
+    });
   }
 
   // Parallax Mouse Movement (Persistent)
