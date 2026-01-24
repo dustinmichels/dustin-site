@@ -46,24 +46,29 @@ function initBackgroundAnimations() {
     });
 
     // Bike dash animation
-    // We utilize GSAP's built-in tick management and lag smoothing to solve the mobile jump issue.
-    // 1. lagSmoothing(100, 16) ensures that if the browser throttles (tab switch/scroll),
-    //    the animation effectively pauses/resumes smoothly instead of jumping forward.
-    // 2. We animate to a huge value (no loop reset) to avoid any potential "loop point" glitches.
+    // Improved solution: "Perfect Loop" + Lag Smoothing
+    // 1. We force a specific stroke-dasharray (12px dash, 12px gap = 24px period)
+    // 2. We animate 0 -> -24 using a standard loop. This avoids large number precision issues.
+    // 3. LagSmoothing prevents the "resume jump" artifact on mobile.
     
-    // Configure global lag smoothing (affects all GSAP animations, which is desired for mobile)
+    // Configure global lag smoothing
     gsap.ticker.lagSmoothing(100, 16);
 
-    // Animate indefinitely
-    // speed = 8 units/second
-    // distance = 100,000 units
-    // duration = 12,500 seconds (~3.5 hours)
-    gsap.to(motionPath, {
-      strokeDashoffset: -100000,
-      duration: 12500, 
-      ease: "none",
-      repeat: -1, // Repeat after 3.5 hours (effectively infinite)
-    });
+    // Force strict dash array to match our animation period (just in case CSS varies)
+    motionPath.style.strokeDasharray = "12, 12";
+
+    // Standard infinite loop
+    // Note: the "infinite scroll" large-number approach may have caused rendering 
+    // glitches on some mobile GPUs. This small-number loop is safer.
+    gsap.fromTo(motionPath, 
+      { strokeDashoffset: 0 },
+      {
+        strokeDashoffset: -24, // Exactly one pattern period
+        duration: 3,           // 24px / 3s = 8px/s speed
+        ease: "none",
+        repeat: -1
+      }
+    );
   }
 
   // Parallax Mouse Movement (Persistent)

@@ -53,25 +53,37 @@ dashOffset -= speed * deltaTime;
 
 **Why it failed:** While monotonic time prevents backward movement calculation errors, it causes a "visual teleport" on resume. If the browser sleeps for 5 seconds, the animation jumps 5 seconds forward instantly. Since the dash pattern is periodic, this large jump disorients the user (aliasing/wagon-wheel effect).
 
-### 7. GSAP with Lag Smoothing & Infinite Scroll (Current Solution)
+### 7. GSAP Infinite Scroll (Failed)
 
-Replaced manual loop with GSAP, leveraging `lagSmoothing`:
+**Why it likely failed:** Using extremely large values (`-100,000`) for `stroke-dashoffset` may have hit floating-point precision limits on mobile GPUs, causing jitter. Alternatively, the "resume jump" might have been a red herring for a **layout shift** issue.
+
+### 8. Standard Loop + Lag Smoothing + 100lvh (Current Solution)
+
+Implemented a hybrid fix attacking three angles:
+
+1.  **Small Numbers:** Switched back to a standard `0` to `-24` loop. We explictly set `stroke-dasharray="12, 12"` in JS to ensure the period aligns perfectly.
+2.  **Lag Smoothing:** Kept `gsap.ticker.lagSmoothing(100, 16)` to prevents resume jumps.
+3.  **Layout Stability (Critical):** Changed the SVG container from `inset-0` (which resizes when mobile URL bars collapse) to `h-[100lvh]` (Large Viewport Height).
+    - **The Theory:** On mobile, scrolling causes the viewport to resize. If the SVG `viewBox` tries to maintain aspect ratio (`xMidYMid slice`), the zooming of the SVG background would cause the dashed line to seemingly "jump" or wobble in size/position. Locking height prevents this.
 
 ```javascript
-gsap.ticker.lagSmoothing(100, 16); // Critical Fix
-
-gsap.to(motionPath, {
-  strokeDashoffset: -100000, // Move indefinitely (no loop reset)
-  duration: 12500, // Maintain 8px/s speed
-  ease: "none",
-  repeat: -1,
-});
+/* main.js */
+gsap.fromTo(
+  motionPath,
+  { strokeDashoffset: 0 },
+  {
+    strokeDashoffset: -24,
+    duration: 3,
+    repeat: -1,
+    ease: "none",
+  },
+);
 ```
 
-**Why this works:**
-
-1.  **Lag Smoothing**: The `lagSmoothing(100, 16)` setting tells GSAP: "If more than 100ms passed since the last frame, pretend only 16ms passed." This forces the animation to **pause** during throttle/sleep and **resume smoothly** from where it left off, rather than jumping to catch up to wall-clock time.
-2.  **No Loop Point**: By animating to a massive number (-100,000) over 3.5 hours, we avoid any visual glitch that might occur at the wrapped loop point (0 to -24).
+```html
+<!-- baseof.html -->
+<div class="fixed top-0 left-0 w-full h-[100lvh] ..."></div>
+```
 
 **Why this should work:**
 

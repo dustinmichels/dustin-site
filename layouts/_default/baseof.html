@@ -8,7 +8,10 @@
       {{ partial "decorations.html" . }}
 
       <!-- Animated Bike Path Layer -->
-      <div class="fixed inset-0 pointer-events-none z-0 opacity-30">
+      <!-- Use 100lvh to prevent resize jumps on mobile when URL bar collapses -->
+      <div
+        class="fixed top-0 left-0 w-full h-[100lvh] pointer-events-none z-0 opacity-30"
+      >
         <svg
           id="bike-svg"
           width="100%"
@@ -31,7 +34,9 @@
             text-anchor="middle"
             dominant-baseline="middle"
             style="transform-origin: center"
-          >🚲</text>
+          >
+            🚲
+          </text>
         </svg>
       </div>
 
