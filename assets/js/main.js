@@ -46,16 +46,18 @@ function initBackgroundAnimations() {
     });
 
     // Dash animation using requestAnimationFrame for smooth mobile performance
-    // Uses modulo to wrap continuously - no reset/jump point
+    // Cap deltaTime to prevent jumps when browser throttles animation
     var dashOffset = 0;
     var lastTime = performance.now();
     var speed = 8; // units per second (24 units / 3 seconds)
 
     function animateDash(currentTime) {
-      var deltaTime = (currentTime - lastTime) / 1000;
+      // Cap deltaTime at 100ms to prevent jumps when browser throttles
+      var deltaTime = Math.min((currentTime - lastTime) / 1000, 0.1);
       lastTime = currentTime;
 
-      dashOffset = (dashOffset - speed * deltaTime) % 24;
+      // Just keep decreasing - no modulo needed, browser handles large values fine
+      dashOffset -= speed * deltaTime;
       motionPath.style.strokeDashoffset = dashOffset;
 
       requestAnimationFrame(animateDash);
