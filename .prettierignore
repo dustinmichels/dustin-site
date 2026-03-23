@@ -1,0 +1,4 @@
+# Ignore Hugo output
+public/
+resources/
+node_modules/

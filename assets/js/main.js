@@ -164,12 +164,13 @@ function updateNavState() {
     else if (currentPath !== "" && href === currentPath) {
       isActive = true;
     }
-    // Fallback for partial matches if needed, but strict is better for top level items
+    // Match sub-pages (e.g. /writing/some-post should activate /writing nav item)
+    // Require href + "/" prefix to avoid false matches like /writings matching /writing
     else if (
       currentPath !== "" &&
       href !== "" &&
-      currentPath.startsWith(href) &&
-      href !== "/"
+      href !== "/" &&
+      currentPath.startsWith(href + "/")
     ) {
       isActive = true;
     }

@@ -17,10 +17,11 @@ social = [
     { name = "GitHub", url = "https://github.com/dustinmichels/" },
     { name = "LinkedIn", url = "https://www.linkedin.com/in/dustin-michels/" },
 ]
-hero_title = "Hi, I'm <span class=\"text-green-600\">Dustin!</span>"
-hero_subtitle = "Cyclist, software engineer, and urban planning master’s student <span class=\"text-blue-600 font-bold\">@ Tufts</span>."
+hero_name = "Dustin"
+hero_subtitle = "Cyclist, software engineer, and urban planning master's student @ Tufts."
 mission_title = "Current Focus:"
-mission_text = "Safe, sustainable, and child-empowering urban design. <span class=\"font-semibold\">Kids, bikes, and kids on bikes.</span>"
+mission_text = "Safe, sustainable, and child-empowering urban design."
+mission_emphasis = "Kids, bikes, and kids on bikes."
 footer_text = "Dustin Michels"
 
 [[menus.main]]

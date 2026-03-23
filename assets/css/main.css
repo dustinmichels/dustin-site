@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Base body styles */
 body {
   font-family: "Outfit", sans-serif;
@@ -16,6 +20,18 @@ h3,
 .map-grid {
   background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+/* Tag shimmer on hover */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.tag-shimmer:hover {
+  background: linear-gradient(90deg, #fff 25%, #bbf7d0 50%, #fff 75%);
+  background-size: 200% auto;
+  animation: shimmer 1s linear infinite;
 }
 
 /* Organic blob shape */
