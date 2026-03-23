@@ -3,7 +3,7 @@ title: "Kava Brewer"
 date: 2021-03-01
 summary: "A program that generates plausible foreign coffee words using a PCFG (probabilistic context-free grammar) and a list of real coffee words."
 emoji: "☕"
-tech: ["NLP", "PCFG"]
+tech: ["NLP", "PCFG", "Python"]
 description: "A program that generates plausible foreign coffee words using a PCFG (probabilistic context-free grammar) and a list of real coffee words."
 ---
 

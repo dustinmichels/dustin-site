@@ -3,7 +3,7 @@ title: "PradellEditor"
 date: 2020-01-01
 summary: "A tool to aid users in formulating paradelle poems. It also provides functionality for sharing your creations by encoding the text into the URL."
 emoji: "✍️"
-tech: ["JavaScript"]
+tech: ["JavaScript", "VueJS"]
 description: "A tool to aid users in formulating paradelle poems."
 ---
 
