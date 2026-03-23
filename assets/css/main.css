@@ -4,16 +4,16 @@
 
 /* Base body styles */
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: "Quicksand", sans-serif;
   cursor: crosshair;
 }
 
-/* Typography - Fredoka for headings */
+/* Typography - Grandstander for headings */
 h1,
 h2,
 h3,
 .brand-font {
-  font-family: "Fredoka", sans-serif;
+  font-family: "Grandstander", sans-serif;
 }
 
 /* Map grid background pattern */
