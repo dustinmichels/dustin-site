@@ -38,8 +38,3 @@ weight = 20
 name = "PORTFOLIO"
 pageRef = "/portfolio"
 weight = 30
-
-[[menus.main]]
-name = "GAMES"
-pageRef = "/games"
-weight = 40

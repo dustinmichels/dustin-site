@@ -1,0 +1,255 @@
+{{ define "main" }}
+<article class="w-full max-w-5xl mx-auto bg-white/95 backdrop-blur-xl p-8 md:p-16 rounded-[3rem] border-4 border-white custom-shadow relative my-12 overflow-hidden group">
+  <!-- Fancy Background Blob inside layout -->
+  <div class="absolute -top-32 -right-32 w-96 h-96 bg-blue-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 z-0 pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+  <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-green-100/50 rounded-full mix-blend-multiply filter blur-3xl opacity-60 z-0 pointer-events-none transition-transform duration-1000 group-hover:translate-x-12"></div>
+
+  <div class="relative z-10 flex flex-col items-center">
+    <header class="text-center w-full max-w-4xl mx-auto mb-16">
+      <!-- Emoji Badge -->
+      <div class="inline-flex items-center justify-center w-24 h-24 mb-8 rounded-full bg-blue-50/80 text-6xl shadow-inner border-2 border-blue-100 transform transition-all hover:scale-110 hover:rotate-6 duration-300">
+        {{ with .Params.emoji }}{{ . }}{{ else }}✨{{ end }}
+      </div>
+
+      <!-- Title -->
+      <h1 class="brand-font text-5xl md:text-7xl font-extrabold text-slate-800 mb-6 tracking-tight group-hover:text-blue-600 transition-colors duration-500">
+        {{ .Title }}
+      </h1>
+
+      <!-- Metadata (Date & Tech) -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-10 w-full">
+        <div class="inline-flex items-center px-5 py-2.5 rounded-full bg-white text-slate-600 font-bold text-sm border-2 border-slate-100 custom-shadow-sm">
+          <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          {{ .Date.Format "January 2006" }}
+        </div>
+        
+        {{ with .Params.tech }}
+        <div class="flex flex-wrap gap-2 justify-center">
+          {{ range . }}
+          <span class="px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 text-teal-700 font-bold text-xs tracking-wider uppercase rounded-full border-2 border-teal-100 tag-shimmer cursor-default custom-shadow-sm">
+            {{ . }}
+          </span>
+          {{ end }}
+        </div>
+        {{ end }}
+      </div>
+
+      <!-- Description / Summary -->
+      {{ with .Params.description }}
+      <p class="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
+        {{ . }}
+      </p>
+      {{ end }}
+    </header>
+
+    <!-- Deep Styled Content Area since Tailwind Typography is missing -->
+    <div class="portfolio-content w-full relative text-lg text-slate-700 leading-relaxed max-w-4xl mx-auto">
+      {{ .Content }}
+      
+      <!-- Navigation Arrows -->
+      <nav class="flex justify-between items-center mt-16 pt-8 border-t-2 border-slate-100 w-full relative z-20">
+        <div class="flex-1 overflow-hidden">
+          {{ with .NextInSection }}
+          <a href="{{ .RelPermalink }}" class="group flex items-center text-slate-500 hover:text-blue-600 transition-colors font-bold text-lg no-underline btn-link">
+            <div class="bg-slate-100 group-hover:bg-blue-100 text-slate-400 group-hover:text-blue-600 rounded-full p-2 mr-4 transition-colors flex-shrink-0">
+              <svg class="w-6 h-6 transform transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </div>
+            <span class="flex flex-col items-start min-w-0">
+              <span class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Previous</span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-[120px] sm:max-w-[200px]">{{ .Title }}</span>
+            </span>
+          </a>
+          {{ end }}
+        </div>
+        
+        <div class="flex-1 flex justify-end text-right overflow-hidden border-l-2 border-transparent">
+          {{ with .PrevInSection }}
+          <a href="{{ .RelPermalink }}" class="group flex items-center justify-end text-slate-500 hover:text-blue-600 transition-colors font-bold text-lg no-underline btn-link w-full">
+            <span class="flex flex-col items-end min-w-0 flex-1">
+              <span class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Next</span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-[120px] sm:max-w-[200px] text-right">{{ .Title }}</span>
+            </span>
+            <div class="bg-slate-100 group-hover:bg-blue-100 text-slate-400 group-hover:text-blue-600 rounded-full p-2 ml-4 transition-colors flex-shrink-0">
+              <svg class="w-6 h-6 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </a>
+          {{ end }}
+        </div>
+      </nav>
+    </div>
+  </div>
+</article>
+
+<style>
+  /* Custom micro-shadow just for metadata pills */
+  .custom-shadow-sm {
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Markdown Content Styling */
+  .portfolio-content {
+    font-family: inherit;
+  }
+  
+  /* Images - Hero or inline */
+  .portfolio-content img {
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    margin: 3rem auto;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 4px solid white;
+  }
+  
+  .portfolio-content img:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.15), 0 15px 15px -5px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Headings */
+  .portfolio-content h2, .portfolio-content h3, .portfolio-content h4 {
+    font-family: 'Grandstander', sans-serif;
+    color: #0f172a;
+    font-weight: 800;
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  .portfolio-content h2 {
+    font-size: 2.5rem;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .portfolio-content h2::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 40px;
+    height: 4px;
+    background: #3b82f6;
+    border-radius: 2px;
+  }
+
+  .portfolio-content h3 {
+    font-size: 2rem;
+  }
+
+  /* Paragraphs */
+  .portfolio-content p {
+    margin-bottom: 1.75rem;
+    font-size: 1.125rem;
+  }
+
+  /* Inline Links */
+  .portfolio-content a:not(.btn-link) {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 700;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .portfolio-content a:not(.btn-link):hover {
+    color: #1d4ed8;
+  }
+  
+  .portfolio-content a:not(.btn-link)::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #93c5fd;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+  }
+  
+  .portfolio-content a:not(.btn-link):hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  /* Emphasized Links turned into Action Buttons (e.g. [[GitHub]]) */
+  .portfolio-content p > em {
+    display: inline-block;
+    margin-right: 0.75rem;
+    margin-bottom: 1rem;
+    font-style: normal;
+  }
+
+  .portfolio-content p > em > a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.5rem;
+    background: white;
+    border: 3px solid #e2e8f0;
+    color: #334155 !important;
+    font-weight: 800 !important;
+    font-family: 'Grandstander', sans-serif;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.08); /* Cute retro shadow */
+  }
+  
+  .portfolio-content p > em > a:hover {
+    background: #f8fafc;
+    border-color: #3b82f6;
+    color: #1d4ed8 !important;
+    transform: translateY(-3px) translateX(-1px);
+    box-shadow: 6px 6px 0px 0px rgba(59, 130, 246, 0.2);
+  }
+  
+  .portfolio-content p > em > a::after {
+    display: none !important; /* Hide standard link underline */
+  }
+
+  /* Bold Text */
+  .portfolio-content strong {
+    color: #0f172a;
+    font-weight: 800;
+  }
+
+  /* Lists */
+  .portfolio-content ul {
+    list-style-type: none;
+    padding-left: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .portfolio-content ul li {
+    position: relative;
+    padding-left: 2.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.125rem;
+  }
+  
+  .portfolio-content ul li::before {
+    content: '🚀';
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    font-size: 1.1rem;
+    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.1));
+  }
+
+  /* Blockquotes */
+  .portfolio-content blockquote {
+    border-left: 6px solid #3b82f6;
+    background: linear-gradient(to right, #eff6ff, transparent);
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
+    border-radius: 0 1rem 1rem 0;
+    font-style: italic;
+    color: #1e3a8a;
+    font-size: 1.25rem;
+  }
+</style>
+{{ end }}

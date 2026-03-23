@@ -1,6 +1,7 @@
 {{ define "main" }}
   <div class="max-w-4xl w-full">
     <h2 class="text-5xl text-slate-900 mb-12 uppercase">{{ .Title }}</h2>
+    {{ if .Pages }}
     <div class="grid gap-8">
       {{ range .Pages }}
         <a
@@ -24,5 +25,9 @@
         </a>
       {{ end }}
     </div>
+    {{ else }}
+    <p class="text-slate-600 text-2xl mb-6">See my blog:</p>
+    <a href="https://dustinthe.city/" target="_blank" rel="noopener noreferrer" style="padding: 2rem 3.5rem;" class="tag-shimmer inline-block bg-white rounded-3xl border-2 border-slate-900 text-slate-900 font-bold text-2xl transition-all custom-shadow hover:-translate-y-1 hover:border-green-500 hover:text-green-600 no-underline">dustinthe.city →</a>
+    {{ end }}
   </div>
 {{ end }}
