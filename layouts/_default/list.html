@@ -1,25 +1,35 @@
 {{ define "main" }}
-<div class="max-w-4xl mx-auto py-12 px-6">
+  <div class="max-w-4xl mx-auto py-12 px-6">
     <h1 class="text-4xl font-bold mb-8 text-slate-800">{{ .Title }}</h1>
     <div class="prose mb-8">
-        {{ .Content }}
+      {{ .Content }}
     </div>
-    
+
     <div class="grid gap-8">
-        {{ range .Pages }}
-        <article class="stagger-item bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-            <h2 class="text-2xl font-bold mb-2">
-                <a href="{{ .RelPermalink }}" class="text-slate-900 hover:text-green-600 transition-colors">{{ .LinkTitle }}</a>
-            </h2>
-            <div class="text-slate-500 text-sm mb-4">
-                {{ .Date.Format "January 2, 2006" }}
-            </div>
-            <div class="text-slate-600">
-               {{ .Summary }}
-            </div>
-            <a href="{{ .RelPermalink }}" class="inline-block mt-4 text-green-600 font-bold hover:underline">Read more →</a>
+      {{ range .Pages }}
+        <article
+          class="stagger-item bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <h2 class="text-2xl font-bold mb-2">
+            <a
+              href="{{ .RelPermalink }}"
+              class="text-slate-900 hover:text-green-600 transition-colors"
+              >{{ .LinkTitle }}</a
+            >
+          </h2>
+          <div class="text-slate-500 text-sm mb-4">
+            {{ .Date.Format "January 2, 2006" }}
+          </div>
+          <div class="text-slate-600">
+            {{ .Summary }}
+          </div>
+          <a
+            href="{{ .RelPermalink }}"
+            class="inline-block mt-4 text-green-600 font-bold hover:underline"
+            >Read more →</a
+          >
         </article>
-        {{ end }}
+      {{ end }}
     </div>
-</div>
+  </div>
 {{ end }}

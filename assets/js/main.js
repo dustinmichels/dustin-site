@@ -12,8 +12,7 @@ function waitForGSAP(callback) {
 // --- Animation Functions ---
 
 // Path data defined in JS to avoid Hugo minifier corruption
-var BIKE_PATH_DATA =
-  "M-100,600 C200,600 400,100 700,400 S900,650 1200,300 S1400,150 1500,200";
+var BIKE_PATH_DATA = "M-100,600 C200,600 400,100 700,400 S900,650 1200,300 S1400,150 1500,200";
 
 function initBackgroundAnimations() {
   // Bike Rider Path Animation (Persistent)
@@ -50,7 +49,7 @@ function initBackgroundAnimations() {
     // 1. We force a specific stroke-dasharray (12px dash, 12px gap = 24px period)
     // 2. We animate 0 -> -24 using a standard loop. This avoids large number precision issues.
     // 3. LagSmoothing prevents the "resume jump" artifact on mobile.
-    
+
     // Configure global lag smoothing
     gsap.ticker.lagSmoothing(100, 16);
 
@@ -58,16 +57,17 @@ function initBackgroundAnimations() {
     motionPath.style.strokeDasharray = "12, 12";
 
     // Standard infinite loop
-    // Note: the "infinite scroll" large-number approach may have caused rendering 
+    // Note: the "infinite scroll" large-number approach may have caused rendering
     // glitches on some mobile GPUs. This small-number loop is safer.
-    gsap.fromTo(motionPath, 
+    gsap.fromTo(
+      motionPath,
       { strokeDashoffset: 0 },
       {
         strokeDashoffset: -24, // Exactly one pattern period
-        duration: 3,           // 24px / 3s = 8px/s speed
+        duration: 3, // 24px / 3s = 8px/s speed
         ease: "none",
-        repeat: -1
-      }
+        repeat: -1,
+      },
     );
   }
 

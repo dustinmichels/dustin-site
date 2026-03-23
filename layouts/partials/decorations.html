@@ -2,24 +2,26 @@
 <div class="parallax-container fixed inset-0 pointer-events-none overflow-hidden">
   {{/* Floating clouds */}}
   {{ range .Site.Data.decorations.clouds }}
-    {{- $style := printf "top: %s;" .top -}}
+    {{- $style := printf "top: %s; font-size: %s;" .top .size -}}
     {{- with .left }}{{ $style = printf "%s left: %s;" $style . }}{{ end -}}
     {{- with .right }}{{ $style = printf "%s right: %s;" $style . }}{{ end -}}
     <span
-      class="floating-element text-{{ .size }}{{ if .desktop_only }} hidden md:block{{ end }}"
+      class="floating-element{{ if .desktop_only }} hidden md:block{{ end }}"
       style="{{ $style | safeCSS }}"
       data-depth="{{ .depth }}"
-    >{{ .emoji }}</span>
+      >{{ .emoji }}</span
+    >
   {{ end }}
 
   {{/* Ground items (trees, buildings) */}}
   {{ range .Site.Data.decorations.ground }}
-    {{- $style := printf "bottom: %s;" .bottom -}}
+    {{- $style := printf "bottom: %s; font-size: %s;" .bottom .size -}}
     {{- with .left }}{{ $style = printf "%s left: %s;" $style . }}{{ end -}}
     {{- with .right }}{{ $style = printf "%s right: %s;" $style . }}{{ end -}}
     <span
-      class="static-decoration text-{{ .size }}{{ if .desktop_only }} hidden md:block{{ end }}"
+      class="static-decoration{{ if .desktop_only }} hidden md:block{{ end }}"
       style="{{ $style | safeCSS }}"
-    >{{ .emoji }}</span>
+      >{{ .emoji }}</span
+    >
   {{ end }}
 </div>

@@ -2,7 +2,7 @@
   "name": "dustin-site",
   "private": true,
   "scripts": {
-    "format": "prettier --write ."
+    "fmt": "prettier --write ."
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

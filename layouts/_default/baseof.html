@@ -7,11 +7,10 @@
     <div id="app" class="relative min-h-screen flex flex-col">
       {{ partial "decorations.html" . }}
 
+
       <!-- Animated Bike Path Layer -->
       <!-- Use 100lvh to prevent resize jumps on mobile when URL bar collapses -->
-      <div
-        class="fixed top-0 left-0 w-full h-[100lvh] pointer-events-none z-0 opacity-30"
-      >
+      <div class="fixed top-0 left-0 w-full h-[100lvh] pointer-events-none z-0 opacity-30">
         <svg
           id="bike-svg"
           width="100%"
@@ -41,6 +40,7 @@
       </div>
 
       {{ partial "nav.html" . }}
+
 
       <!-- Main Content -->
       <main

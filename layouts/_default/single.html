@@ -1,15 +1,19 @@
 {{ define "main" }}
-<div class="max-w-4xl w-full bg-white p-8 md:p-12 rounded-3xl border-2 border-slate-100 custom-shadow">
+  <div
+    class="max-w-4xl w-full bg-white p-8 md:p-12 rounded-3xl border-2 border-slate-100 custom-shadow"
+  >
     <header class="stagger-item mb-8">
-        <div class="text-xs font-black text-green-600 uppercase tracking-widest mb-2">{{ .Date.Format "January 2, 2006" }}</div>
-        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">{{ .Title }}</h1>
-        {{ with .Params.description }}
+      <div class="text-xs font-black text-green-600 uppercase tracking-widest mb-2">
+        {{ .Date.Format "January 2, 2006" }}
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">{{ .Title }}</h1>
+      {{ with .Params.description }}
         <p class="text-xl text-slate-500 leading-relaxed">{{ . }}</p>
-        {{ end }}
+      {{ end }}
     </header>
-    
+
     <article class="stagger-item prose prose-slate prose-lg max-w-none">
-        {{ .Content }}
+      {{ .Content }}
     </article>
-</div>
+  </div>
 {{ end }}
