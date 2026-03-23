@@ -7,9 +7,8 @@
 /.hugo_cache/
 /.hugo_build.lock
 
-# Node/npm artifacts
+# Node/bun artifacts
 /node_modules/
-/.npm/_logs/
 
 # OS files
 .DS_Store
