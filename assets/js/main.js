@@ -23,8 +23,6 @@ function initBackgroundAnimations() {
     // Set the path data from JS (Hugo minifier corrupts SVG path d attribute)
     motionPath.setAttribute("d", BIKE_PATH_DATA);
 
-    // Shorter durations so bike exits screen faster, then 1s delay before restart
-    // Mobile has shorter path visibility, so vanishes earlier
     var isMobile = window.innerWidth < 768;
     var duration = isMobile ? 8 : 10;
 
@@ -45,128 +43,33 @@ function initBackgroundAnimations() {
     });
 
     // Bike dash animation
-    // Improved solution: "Perfect Loop" + Lag Smoothing
-    // 1. We force a specific stroke-dasharray (12px dash, 12px gap = 24px period)
-    // 2. We animate 0 -> -24 using a standard loop. This avoids large number precision issues.
-    // 3. LagSmoothing prevents the "resume jump" artifact on mobile.
-
-    // Configure global lag smoothing
     gsap.ticker.lagSmoothing(100, 16);
-
-    // Force strict dash array to match our animation period (just in case CSS varies)
     motionPath.style.strokeDasharray = "12, 12";
-
-    // Standard infinite loop
-    // Note: the "infinite scroll" large-number approach may have caused rendering
-    // glitches on some mobile GPUs. This small-number loop is safer.
     gsap.fromTo(
       motionPath,
       { strokeDashoffset: 0 },
       {
-        strokeDashoffset: -24, // Exactly one pattern period
-        duration: 3, // 24px / 3s = 8px/s speed
+        strokeDashoffset: -24,
+        duration: 3,
         ease: "none",
         repeat: -1,
       },
     );
   }
-
-  // Parallax Mouse Movement (Persistent)
-  document.addEventListener("mousemove", (e) => {
-    if (typeof gsap === "undefined") return;
-    const { clientX, clientY } = e;
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-
-    document.querySelectorAll(".floating-element").forEach((el) => {
-      const depth = parseFloat(el.getAttribute("data-depth") || 0);
-      const moveX = (clientX - centerX) * depth;
-      const moveY = (clientY - centerY) * depth;
-      gsap.to(el, {
-        x: moveX,
-        y: moveY,
-        duration: 1.2,
-        ease: "power2.out",
-      });
-    });
-  });
-}
-
-function initPageAnimations() {
-  // Scroll to top
-  window.scrollTo(0, 0);
-
-  // Guard against GSAP not being loaded yet
-  if (typeof gsap === "undefined") {
-    updateNavState();
-    return;
-  }
-
-  // Stagger items entrance
-  const staggerItems = document.querySelectorAll(".stagger-item");
-  if (staggerItems.length > 0) {
-    gsap.from(staggerItems, {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      ease: "back.out(1.7)",
-    });
-  }
-
-  // Hero Title Animation (if present)
-  const heroTitle = document.querySelector(".hero-title");
-  if (heroTitle) {
-    gsap.from(heroTitle, {
-      scale: 0.8,
-      opacity: 0,
-      duration: 1.2,
-      ease: "elastic.out(1, 0.5)",
-    });
-  }
-
-  // Also animate blob images if they exist (mimic old site)
-  const blobs = document.querySelectorAll(".blob");
-  if (blobs.length > 0) {
-    gsap.from(blobs, {
-      duration: 1.5,
-      scale: 0.8,
-      opacity: 0,
-      stagger: 0.2,
-      ease: "elastic.out(1, 0.3)",
-    });
-  }
-
-  // Re-run Nav Update
-  updateNavState();
 }
 
 function updateNavState() {
-  const currentPath = window.location.pathname.replace(/\/$/, ""); // Normalize trailing slash
+  const currentPath = window.location.pathname.replace(/\/$/, "");
 
-  // Update Logo Color
-  // Update Logo Color - REMOVED (Always static now)
-  // logic removed to keep default slate color always
-
-  // Update Nav Links
   document.querySelectorAll("nav a.nav-link").forEach((link) => {
     const href = link.getAttribute("href").replace(/\/$/, "");
-    // Simple active check
-    // Note: This relies on the href being relative or matching.
-    // Hugo often outputs full URLs. Let's check `href.endsWith(path)`
 
     let isActive = false;
-    // Match Home
     if (currentPath === "" && (href === "" || href === "/")) {
       isActive = true;
-    }
-    // Match Other Pages
-    else if (currentPath !== "" && href === currentPath) {
+    } else if (currentPath !== "" && href === currentPath) {
       isActive = true;
-    }
-    // Match sub-pages (e.g. /writing/some-post should activate /writing nav item)
-    // Require href + "/" prefix to avoid false matches like /writings matching /writing
-    else if (
+    } else if (
       currentPath !== "" &&
       href !== "" &&
       href !== "/" &&
@@ -187,57 +90,27 @@ function updateNavState() {
 
 // --- Initialization ---
 
-var swupInstance = null;
-
-// Wait for Swup to be available
-function waitForSwup(callback) {
-  if (typeof Swup !== "undefined" && typeof SwupHeadPlugin !== "undefined") {
-    callback();
-  } else {
-    setTimeout(function () {
-      waitForSwup(callback);
-    }, 50);
-  }
-}
-
-// Initialize everything once dependencies are loaded
 function initAll() {
-  // Wait for GSAP to load, then initialize animations
+  updateNavState();
+
   waitForGSAP(function () {
     gsap.registerPlugin(MotionPathPlugin);
     initBackgroundAnimations();
-    initPageAnimations();
-  });
-
-  // Wait for Swup to load, then initialize page transitions
-  waitForSwup(function () {
-    swupInstance = new Swup({
-      containers: ["#swup"],
-      plugins: [new SwupHeadPlugin()],
-    });
-
-    swupInstance.hooks.on("content:replace", function () {
-      initPageAnimations();
-    });
   });
 }
 
-// Start initialization
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initAll);
 } else {
   initAll();
 }
 
-// 5. Manual Override for Brand Link (Prevent Flash)
-// We expose this globally and call it via onclick in HTML to ensure it captures the event unconditionally.
+// Manual Override for Brand Link
 window.handleBrandClick = function (e) {
-  // Check for modifier keys - allow default behavior (new tab, etc)
   if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
     return;
   }
 
-  // Prevent Browser Reload
   e.preventDefault();
   e.stopPropagation();
 
@@ -245,14 +118,8 @@ window.handleBrandClick = function (e) {
   const isHome = currentPath === "" || currentPath === "/index.html";
 
   if (isHome) {
-    // Just scroll to top if already home
     window.scrollTo({ top: 0, behavior: "smooth" });
   } else {
-    // Navigate otherwise
-    if (swupInstance) {
-      swupInstance.navigate("/");
-    } else {
-      window.location.href = "/";
-    }
+    window.location.href = "/";
   }
 };
