@@ -1,30 +1,25 @@
 {{ define "main" }}
   <div class="max-w-6xl w-full">
     <h2 class="text-5xl text-slate-900 mb-12 text-center uppercase">{{ .Title }}</h2>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="flex flex-col gap-4 md:gap-6">
       {{ range .Pages }}
-        <a
-          href="{{ .RelPermalink }}"
-          class="block bg-white rounded-[2.5rem] overflow-hidden border-2 border-slate-100 hover:border-blue-500 transition-all hover:-translate-y-2 group no-underline"
-        >
-          <div
-            class="h-56 bg-slate-100 flex items-center justify-center text-6xl group-hover:bg-blue-50 transition-colors"
-          >
+        <a href="{{ .RelPermalink }}" class="flex items-start p-4 md:p-6 bg-white rounded-[1.25rem] md:rounded-[2rem] border-2 border-slate-100 hover:border-blue-500 shadow-sm hover:shadow-md md:hover:-translate-y-1 transition-all group no-underline gap-4 md:gap-6">
+          <div class="w-16 h-16 md:w-24 md:h-24 flex-shrink-0 bg-slate-100 flex items-center justify-center text-3xl md:text-5xl rounded-xl md:rounded-2xl group-hover:bg-blue-50 transition-colors">
             {{ with .Params.emoji }}{{ . }}{{ else }}📄{{ end }}
           </div>
-          <div class="p-8">
-            <h4 class="text-xl font-bold mb-1 text-slate-900">{{ .Title }}</h4>
-            <div class="text-sm font-medium text-slate-500 mb-3 flex items-center gap-1.5">
-              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              {{ .Date.Format "January 2006" }}
+          
+          <div class="flex-1 min-w-0">
+            <h4 class="text-lg md:text-2xl font-bold text-slate-900 truncate mb-1 md:mb-1.5">{{ .Title }}</h4>
+            <div class="text-xs md:text-sm font-medium text-slate-500 flex items-center gap-1 md:gap-1.5 mb-2 md:mb-3">
+              <svg class="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              <span>{{ .Date.Format "Jan 2006" }}</span>
             </div>
-            <p class="text-slate-500 text-sm mb-6">{{ .Summary }}</p>
-            <div class="flex gap-2 flex-wrap">
+            
+            <p class="text-slate-500 text-sm md:text-base line-clamp-2 mb-3 md:mb-4">{{ .Summary }}</p>
+            
+            <div class="flex gap-1.5 md:gap-2 flex-wrap">
               {{ range .Params.tech }}
-                <span
-                  class="text-[10px] bg-slate-100 px-2 py-1 rounded-md font-bold text-slate-400 uppercase"
-                  >{{ . }}</span
-                >
+                <span class="text-[10px] md:text-xs bg-slate-100 px-2 py-0.5 md:py-1 rounded-md font-bold text-slate-400 uppercase">{{ . }}</span>
               {{ end }}
             </div>
           </div>
