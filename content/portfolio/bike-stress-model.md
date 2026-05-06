@@ -1,5 +1,5 @@
 ---
-title: "Children's Bike Safety Mapping Tool"
+title: "Bike Networks with Children in Mind"
 date: 2025-12-01
 summary: "An interactive map scoring cycling network segments by safety, targeted towards children and other vulnerable riders."
 emoji: "🗺️"
@@ -10,7 +10,7 @@ description: "An interactive safety map for cyclists in Somerville, MA, with cus
 ![bike stress model screenshot](/images/portfolio/bike-safety.png)
 
 _[[Website]](https://dustinmichels.github.io/bike-stress-model/)_
-_[[About]](https://arcg.is/1ziaPD1)_
+_[[StoryMap]](https://arcg.is/1ziaPD1)_
 _[[GitHub]](https://github.com/dustinmichels/bike-stress-model)_
 
 This interactive map assigns a composite safety score to each segment of the cycling network in Somerville, MA, targeted towards the needs of children and other vulnerable riders.
